@@ -16,63 +16,6 @@ export default function InformationPage() {
     { id: 'legal', label: 'Hukuki Durum', icon: '⚖️' }
   ];
 
-  const historyTimeline = [
-    {
-      year: '1917',
-      title: 'Balfour Deklarasyonu',
-      description: 'Britanya, Filistin\'de Yahudiler için "ulusal bir yuva" kurulmasını desteklediğini açıkladı.',
-      importance: 'critical'
-    },
-    {
-      year: '1947',
-      title: 'BM Paylaşım Planı',
-      description: 'Birleşmiş Milletler, Filistin\'i bölme kararı aldı. Filistinliler bu planı reddetti.',
-      importance: 'critical'
-    },
-    {
-      year: '1948',
-      title: 'Nakba (Felaket)',
-      description: 'İsrail\'in kurulması ve 750,000 Filistinlinin zorla yerlerinden edilmesi.',
-      importance: 'critical'
-    },
-    {
-      year: '1967',
-      title: 'Altı Gün Savaşı',
-      description: 'İsrail, Batı Şeria, Gazze Şeridi, Doğu Kudüs ve Golan Tepelerini işgal etti.',
-      importance: 'high'
-    },
-    {
-      year: '1987',
-      title: 'Birinci İntifada',
-      description: 'Filistin halkının işgale karşı kitle ayaklanması başladı.',
-      importance: 'high'
-    },
-    {
-      year: '1993',
-      title: 'Oslo Anlaşmaları',
-      description: 'İsrail ile FKÖ arasında barış görüşmeleri başladı.',
-      importance: 'medium'
-    },
-    {
-      year: '2000',
-      title: 'İkinci İntifada',
-      description: 'Camp David görüşmelerinin başarısızlığından sonra ikinci ayaklanma başladı.',
-      importance: 'high'
-    },
-    {
-      year: '2007',
-      title: 'Gazze Ablukası',
-      description: 'İsrail, Gazze\'ye kara, deniz ve hava ablukası uygulamaya başladı.',
-      importance: 'critical'
-    },
-    {
-      year: '2023',
-      title: 'Günümüz',
-      description: 'Gazze\'deki durum kritik seviyelere ulaştı, uluslararası destek artıyor.',
-      importance: 'critical'
-    }
-  ];
-
   const currentStats = [
     { 
       title: 'Gazze Nüfusu', 
@@ -172,15 +115,6 @@ export default function InformationPage() {
       answer: 'Türkiye, iki devletli çözümü desteklemekte, Filistin devletini tanımakta ve insani yardımlarda bulunmaktadır. Türk halkı da Filistin davasına güçlü destek vermektedir.'
     }
   ];
-
-  const getImportanceColor = (importance: string) => {
-    switch (importance) {
-      case 'critical': return 'bg-red-500';
-      case 'high': return 'bg-orange-500';
-      case 'medium': return 'bg-yellow-500';
-      default: return 'bg-blue-500';
-    }
-  };
 
   const getTrendIcon = (trend: string) => {
     switch (trend) {
