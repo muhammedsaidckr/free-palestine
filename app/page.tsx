@@ -274,8 +274,8 @@ export default function Home() {
             Filistin İçin <span className="text-[#CE1126]">Birlikte</span> Duralım
           </h1>
           <p className="text-xl text-white mb-8 max-w-3xl mx-auto drop-shadow-md">
-            Türkiye&apos;den Filistin&apos;e destek. Adaletsizliğe karşı sesimizi yükseltelim, 
-            farkındalık yaratalım ve dayanışma içinde olalım.
+            58,573+ canın kaybedildiği, 139,607+ kişinin yaralandığı Gazze&apos;de süren insani krize 
+            karşı Türkiye&apos;den ses çıkarıyoruz. Sessiz kalmayacağız, umudunu kaybetmeyeceğiz.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button 
@@ -304,18 +304,26 @@ export default function Home() {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="bg-white p-6 rounded-lg shadow-md text-center">
-              <div className="text-3xl font-bold text-[#CE1126] mb-2">75+</div>
-              <div className="text-gray-600">Yıldır süren işgal</div>
+              <div className="text-3xl font-bold text-[#CE1126] mb-2">58,573+</div>
+              <div className="text-gray-600">Hayatını kaybeden Filistinli</div>
+              <div className="text-xs text-gray-500 mt-1">(Ağustos 2025)</div>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md text-center">
-              <div className="text-3xl font-bold text-[#CE1126] mb-2">2.3M</div>
-              <div className="text-gray-600">Gazze nüfusu</div>
+              <div className="text-3xl font-bold text-[#CE1126] mb-2">139,607+</div>
+              <div className="text-gray-600">Yaralanan kişi</div>
+              <div className="text-xs text-gray-500 mt-1">(Ağustos 2025)</div>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md text-center">
-              <div className="text-3xl font-bold text-[#CE1126] mb-2">365km²</div>
-              <div className="text-gray-600">Gazze alanı</div>
+              <div className="text-3xl font-bold text-[#CE1126] mb-2">90%</div>
+              <div className="text-gray-600">Yerinden edilmiş nüfus</div>
+              <div className="text-xs text-gray-500 mt-1">Gazze&apos;de</div>
+            </div>
+            <div className="bg-white p-6 rounded-lg shadow-md text-center">
+              <div className="text-3xl font-bold text-[#CE1126] mb-2">45,000</div>
+              <div className="text-gray-600">Ton yardım malzemesi</div>
+              <div className="text-xs text-gray-500 mt-1">Türkiye&apos;den</div>
             </div>
           </div>
         </div>
@@ -351,6 +359,13 @@ export default function Home() {
               <div>
                 <h3 className="font-bold text-gray-900">2007 - Gazze Ablukası</h3>
                 <p className="text-gray-600">2.3 milyon insanın açık hava hapishanesi yaşamı</p>
+              </div>
+            </div>
+            <div className="flex items-start space-x-4">
+              <div className="w-4 h-4 bg-[#007A3D] rounded-full mt-1 flex-shrink-0"></div>
+              <div>
+                <h3 className="font-bold text-gray-900">2023-2025 - Gazze Saldırıları</h3>
+                <p className="text-gray-600">58,573+ can kaybı, 139,607+ yaralı, nüfusun %90&apos;ı yerinden edildi</p>
               </div>
             </div>
           </div>
@@ -389,13 +404,13 @@ export default function Home() {
               </button>
             </div>
             <div className="bg-white/10 p-6 rounded-lg">
-              <h3 className="text-xl font-bold mb-4">🛒 Bilinçli Tüket</h3>
-              <p className="mb-4">Boykot listesini incele, alternatif ürünleri tercih et</p>
+              <h3 className="text-xl font-bold mb-4">🛒 Ekonomik Direniş</h3>
+              <p className="mb-4">BDS hareketiyle dayanışma: Boykot, Yaptırım, Yatırım Çekme</p>
               <button 
                 onClick={handleBoycottList}
                 className="bg-white text-[#CE1126] px-4 py-2 rounded font-medium hover:bg-gray-100 transition-colors"
               >
-                Liste
+                BDS Listesi
               </button>
             </div>
           </div>
@@ -415,23 +430,50 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
               <div className="p-6">
-                <div className="text-sm text-gray-500 mb-2">2 saat önce</div>
-                <h3 className="font-bold text-gray-900 mb-2">BM&apos;den Gazze&apos;ye yardım çağrısı</h3>
-                <p className="text-gray-600 text-sm">Birleşmiş Milletler, Gazze&apos;deki insani krize dikkat çekiyor...</p>
+                <div className="text-sm text-red-600 font-medium mb-2">ACİL</div>
+                <h3 className="font-bold text-gray-900 mb-2">Gazze&apos;de Açlık Krizi Derinleşiyor</h3>
+                <p className="text-gray-600 text-sm">BM uzmanları Gazze&apos;deki açlık krizinin facia boyutlarında olduğunu bildirdi. Her 3 kişiden birinin günlerce aç kaldığı rapor edildi.</p>
+                <div className="text-xs text-gray-400 mt-2">BM Raporu - Ağustos 2025</div>
               </div>
             </div>
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
               <div className="p-6">
-                <div className="text-sm text-gray-500 mb-2">5 saat önce</div>
-                <h3 className="font-bold text-gray-900 mb-2">Türkiye&apos;den Filistin&apos;e destek</h3>
-                <p className="text-gray-600 text-sm">Türk halkından Filistin halkına dayanışma mesajları...</p>
+                <div className="text-sm text-blue-600 font-medium mb-2">TÜRKİYE</div>
+                <h3 className="font-bold text-gray-900 mb-2">İstanbul&apos;da Filistin Dayanışması</h3>
+                <p className="text-gray-600 text-sm">15 STK&apos;nın oluşturduğu Filistin Dayanışma Platformu İstanbul&apos;da meşaleli yürüyüş düzenledi. &quot;Gazze için Umut Işığı Ol&quot; sloganıyla binlerce kişi yürüdü.</p>
+                <div className="text-xs text-gray-400 mt-2">Ağustos 2025</div>
               </div>
             </div>
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
               <div className="p-6">
-                <div className="text-sm text-gray-500 mb-2">1 gün önce</div>
-                <h3 className="font-bold text-gray-900 mb-2">Uluslararası destek artıyor</h3>
-                <p className="text-gray-600 text-sm">Dünya genelinde Filistin&apos;e destek eylemleri...</p>
+                <div className="text-sm text-green-600 font-medium mb-2">YARDIM</div>
+                <h3 className="font-bold text-gray-900 mb-2">Türkiye&apos;den 45,000 Ton Yardım</h3>
+                <p className="text-gray-600 text-sm">Cumhurbaşkanı Erdoğan, Türkiye&apos;nin Gazze&apos;ye toplam 45,000 ton insani yardım malzemesi gönderdiğini açıkladı. Türkiye Filistin&apos;in en büyük yardım ortaklarından biri.</p>
+                <div className="text-xs text-gray-400 mt-2">T.C. Cumhurbaşkanlığı</div>
+              </div>
+            </div>
+            <div className="bg-white rounded-lg shadow-md overflow-hidden">
+              <div className="p-6">
+                <div className="text-sm text-purple-600 font-medium mb-2">SAĞLIK</div>
+                <h3 className="font-bold text-gray-900 mb-2">Çocuklarda Yetersiz Beslenme Artıyor</h3>
+                <p className="text-gray-600 text-sm">5 yaş altı çocuklarda akut yetersiz beslenme oranı %9&apos;a yükseldi. Gazze Şehri&apos;nde bu oran %16&apos;ya çıktı. 100,000 kadın ve çocuk ciddi yetersiz beslenme yaşıyor.</p>
+                <div className="text-xs text-gray-400 mt-2">WHO Raporu</div>
+              </div>
+            </div>
+            <div className="bg-white rounded-lg shadow-md overflow-hidden">
+              <div className="p-6">
+                <div className="text-sm text-orange-600 font-medium mb-2">DİPLOMASİ</div>
+                <h3 className="font-bold text-gray-900 mb-2">Uluslararası Tanınma Hamlesi</h3>
+                <p className="text-gray-600 text-sm">İngiltere, Fransa ve Kanada Filistin devletini tanımayı planlıyor. Gazze&apos;deki açlığa karşı uluslararası baskı artıyor.</p>
+                <div className="text-xs text-gray-400 mt-2">Diplomatik Kaynaklar</div>
+              </div>
+            </div>
+            <div className="bg-white rounded-lg shadow-md overflow-hidden">
+              <div className="p-6">
+                <div className="text-sm text-red-600 font-medium mb-2">İNSANİ KRİZ</div>
+                <h3 className="font-bold text-gray-900 mb-2">Yardım Dağıtımında Saldırı</h3>
+                <p className="text-gray-600 text-sm">Mayıs&apos;tan beri 1,000&apos;den fazla Filistinli yardım almaya çalışırken hayatını kaybetti. Çoğu yardım dağıtım merkezlerinde öldürüldü.</p>
+                <div className="text-xs text-gray-400 mt-2">BM İnsan Hakları Ofisi</div>
               </div>
             </div>
           </div>
