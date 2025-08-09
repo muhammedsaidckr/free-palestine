@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { Timeline } from "@/components/Timeline";
 
 export default function InformationPage() {
   const [activeTab, setActiveTab] = useState('history');
@@ -262,36 +263,7 @@ export default function InformationPage() {
                 </p>
               </div>
 
-              <div className="relative">
-                <div className="absolute left-4 md:left-1/2 md:transform md:-translate-x-px h-full w-0.5 bg-gray-300"></div>
-                <div className="space-y-8">
-                  {historyTimeline.map((event, index) => (
-                    <div key={index} className="relative flex items-center">
-                      <div className={`absolute left-0 md:left-1/2 md:transform md:-translate-x-1/2 w-8 h-8 ${getImportanceColor(event.importance)} rounded-full flex items-center justify-center text-white text-sm font-bold`}>
-                        {event.year.slice(-2)}
-                      </div>
-                      
-                      <div className={`ml-12 md:ml-0 ${index % 2 === 0 ? 'md:mr-1/2 md:pr-8' : 'md:ml-1/2 md:pl-8'} md:w-1/2`}>
-                        <div className="bg-white p-6 rounded-lg shadow-md border-l-4 border-[#CE1126]">
-                          <div className="flex justify-between items-start mb-2">
-                            <h3 className="text-lg font-bold text-gray-900">{event.year}</h3>
-                            <span className={`text-xs px-2 py-1 rounded-full ${
-                              event.importance === 'critical' ? 'bg-red-100 text-red-800' :
-                              event.importance === 'high' ? 'bg-orange-100 text-orange-800' :
-                              'bg-yellow-100 text-yellow-800'
-                            }`}>
-                              {event.importance === 'critical' ? 'Kritik' : 
-                               event.importance === 'high' ? 'Yüksek' : 'Orta'}
-                            </span>
-                          </div>
-                          <h4 className="font-semibold text-gray-900 mb-2">{event.title}</h4>
-                          <p className="text-gray-600 text-sm leading-relaxed">{event.description}</p>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+              <Timeline />
             </div>
           )}
 
