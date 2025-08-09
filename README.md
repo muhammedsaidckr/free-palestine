@@ -1,36 +1,100 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Özgür Filistin - Free Palestine Türkiye
+
+A solidarity platform supporting Palestine from Turkey. This website provides current information about the humanitarian crisis in Gaza, Turkey's aid efforts, and ways for Turkish citizens to show support for Palestine.
+
+## About the Project
+
+This platform aims to:
+- Raise awareness about the ongoing humanitarian crisis in Palestine
+- Provide current statistics and news updates
+- Showcase Turkey's solidarity and humanitarian aid efforts
+- Offer actionable ways for supporters to help (sharing, petitions, BDS movement)
+- Create a Turkish-language resource for Palestine solidarity
+
+## Features
+
+- **Current Crisis Data**: Real-time statistics from UN, WHO, and other reliable sources
+- **Turkish Content**: Fully localized for Turkish audience
+- **News Updates**: Latest developments from Gaza and international solidarity efforts
+- **Action Center**: Ways to support Palestine through sharing, petitions, and economic resistance
+- **Responsive Design**: Works on desktop and mobile devices
+- **Bilingual Support**: Turkish/English language toggle
+
+## Tech Stack
+
+- **Framework**: Next.js 15 with App Router
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS v4
+- **Fonts**: Geist Sans and Geist Mono
+- **Build Tool**: Turbopack
 
 ## Getting Started
 
-First, run the development server:
+First, install dependencies:
+
+```bash
+npm install
+```
+
+Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to view the website.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Available Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `npm run dev` - Start development server with Turbopack
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npm run lint` - Run ESLint checks
 
-## Learn More
+## Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+app/
+├── page.tsx          # Main homepage
+├── layout.tsx        # Root layout with metadata
+├── globals.css       # Global styles
+├── bilgilendirme/    # Information pages
+├── haberler/         # News pages
+└── eylemler/         # Actions pages
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+public/
+├── logo.svg          # Palestinian flag logo
+└── hero.jpg          # Hero background image
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Data Sources
 
-## Deploy on Vercel
+The website uses current data from:
+- United Nations (UN) reports
+- World Health Organization (WHO)
+- Turkish government humanitarian aid statistics
+- Reliable international news sources
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Contributing
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This is a community-driven project supporting Palestine. Contributions are welcome for:
+- Content updates and translations
+- Technical improvements
+- Design enhancements
+- Additional features for solidarity actions
+
+## Deployment
+
+The application can be deployed on:
+- Vercel (recommended)
+- Netlify
+- Any Node.js hosting platform
+
+For Vercel deployment:
+```bash
+npm run build
+```
+
+## License
+
+This project is created to support humanitarian causes and promote awareness about Palestine.
