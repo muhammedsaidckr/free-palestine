@@ -77,9 +77,9 @@ export default function Home() {
             {/* Navigation */}
             <nav className="hidden md:flex space-x-8">
               <button onClick={() => handleNavigation('#')} className="text-gray-900 hover:text-[#CE1126] font-medium cursor-pointer">Ana Sayfa</button>
-              <button onClick={() => handleNavigation('#bilgi')} className="text-gray-700 hover:text-[#CE1126] font-medium cursor-pointer">Bilgilendirme</button>
-              <button onClick={() => handleNavigation('#haberler')} className="text-gray-700 hover:text-[#CE1126] font-medium cursor-pointer">Haberler</button>
-              <button onClick={() => handleNavigation('#hareket')} className="text-gray-700 hover:text-[#CE1126] font-medium cursor-pointer">Harekete Geç</button>
+              <a href="/bilgilendirme" className="text-gray-700 hover:text-[#CE1126] font-medium">Bilgilendirme</a>
+              <a href="/haberler" className="text-gray-700 hover:text-[#CE1126] font-medium">Haberler</a>
+              <a href="/eylemler" className="text-gray-700 hover:text-[#CE1126] font-medium">Eylemler</a>
               <button onClick={() => scrollToSection('iletisim')} className="text-gray-700 hover:text-[#CE1126] font-medium cursor-pointer">İletişim</button>
             </nav>
             
@@ -161,24 +161,27 @@ export default function Home() {
               >
                 Ana Sayfa
               </button>
-              <button
-                onClick={() => handleNavigation('#bilgi')}
+              <a
+                href="/bilgilendirme"
                 className="block w-full text-left px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#CE1126] font-medium border-l-4 border-transparent hover:border-[#CE1126]"
+                onClick={closeMobileMenu}
               >
                 Bilgilendirme
-              </button>
-              <button
-                onClick={() => handleNavigation('#haberler')}
+              </a>
+              <a
+                href="/haberler"
                 className="block w-full text-left px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#CE1126] font-medium border-l-4 border-transparent hover:border-[#CE1126]"
+                onClick={closeMobileMenu}
               >
                 Haberler
-              </button>
-              <button
-                onClick={() => handleNavigation('#hareket')}
+              </a>
+              <a
+                href="/eylemler"
                 className="block w-full text-left px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#CE1126] font-medium border-l-4 border-transparent hover:border-[#CE1126]"
+                onClick={closeMobileMenu}
               >
-                Harekete Geç
-              </button>
+                Eylemler
+              </a>
               <button
                 onClick={() => scrollToSection('iletisim')}
                 className="block w-full text-left px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#CE1126] font-medium border-l-4 border-transparent hover:border-[#CE1126]"
@@ -271,7 +274,7 @@ export default function Home() {
             Filistin İçin <span className="text-[#CE1126]">Birlikte</span> Duralım
           </h1>
           <p className="text-xl text-white mb-8 max-w-3xl mx-auto drop-shadow-md">
-            Türkiye'den Filistin'e destek. Adaletsizliğe karşı sesimizi yükseltelim, 
+            Türkiye&apos;den Filistin&apos;e destek. Adaletsizliğe karşı sesimizi yükseltelim, 
             farkındalık yaratalım ve dayanışma içinde olalım.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -297,7 +300,7 @@ export default function Home() {
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Güncel Durum</h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Filistin'de yaşanan insani krizin güncel verileri
+              Filistin&apos;de yaşanan insani krizin güncel verileri
             </p>
           </div>
           
@@ -322,7 +325,7 @@ export default function Home() {
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Filistin'in Tarihi</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">Filistin&apos;in Tarihi</h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
               Temel tarihsel olaylar ve dönüm noktaları
             </p>
@@ -333,14 +336,14 @@ export default function Home() {
               <div className="w-4 h-4 bg-[#CE1126] rounded-full mt-1 flex-shrink-0"></div>
               <div>
                 <h3 className="font-bold text-gray-900">1948 - Nakba (Felaket)</h3>
-                <p className="text-gray-600">İsrail'in kurulması ve 750,000 Filistinlinin yerlerinden edilmesi</p>
+                <p className="text-gray-600">İsrail&apos;in kurulması ve 750,000 Filistinlinin yerlerinden edilmesi</p>
               </div>
             </div>
             <div className="flex items-start space-x-4">
               <div className="w-4 h-4 bg-[#007A3D] rounded-full mt-1 flex-shrink-0"></div>
               <div>
                 <h3 className="font-bold text-gray-900">1967 - Altı Gün Savaşı</h3>
-                <p className="text-gray-600">Batı Şeria, Gazze, Doğu Kudüs ve Golan Tepeleri'nin işgali</p>
+                <p className="text-gray-600">Batı Şeria, Gazze, Doğu Kudüs ve Golan Tepeleri&apos;nin işgali</p>
               </div>
             </div>
             <div className="flex items-start space-x-4">
@@ -405,7 +408,7 @@ export default function Home() {
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Son Haberler</h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Filistin'den güncel gelişmeler
+              Filistin&apos;den güncel gelişmeler
             </p>
           </div>
           
@@ -413,14 +416,14 @@ export default function Home() {
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
               <div className="p-6">
                 <div className="text-sm text-gray-500 mb-2">2 saat önce</div>
-                <h3 className="font-bold text-gray-900 mb-2">BM'den Gazze'ye yardım çağrısı</h3>
-                <p className="text-gray-600 text-sm">Birleşmiş Milletler, Gazze'deki insani krize dikkat çekiyor...</p>
+                <h3 className="font-bold text-gray-900 mb-2">BM&apos;den Gazze&apos;ye yardım çağrısı</h3>
+                <p className="text-gray-600 text-sm">Birleşmiş Milletler, Gazze&apos;deki insani krize dikkat çekiyor...</p>
               </div>
             </div>
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
               <div className="p-6">
                 <div className="text-sm text-gray-500 mb-2">5 saat önce</div>
-                <h3 className="font-bold text-gray-900 mb-2">Türkiye'den Filistin'e destek</h3>
+                <h3 className="font-bold text-gray-900 mb-2">Türkiye&apos;den Filistin&apos;e destek</h3>
                 <p className="text-gray-600 text-sm">Türk halkından Filistin halkına dayanışma mesajları...</p>
               </div>
             </div>
@@ -428,7 +431,7 @@ export default function Home() {
               <div className="p-6">
                 <div className="text-sm text-gray-500 mb-2">1 gün önce</div>
                 <h3 className="font-bold text-gray-900 mb-2">Uluslararası destek artıyor</h3>
-                <p className="text-gray-600 text-sm">Dünya genelinde Filistin'e destek eylemleri...</p>
+                <p className="text-gray-600 text-sm">Dünya genelinde Filistin&apos;e destek eylemleri...</p>
               </div>
             </div>
           </div>
@@ -450,14 +453,15 @@ export default function Home() {
                 />
                 <span className="text-xl font-bold">Özgür Filistin</span>
               </div>
-              <p className="text-gray-400">Türkiye'den Filistin'e destek platformu</p>
+              <p className="text-gray-400">Türkiye&apos;den Filistin&apos;e destek platformu</p>
             </div>
             <div>
               <h3 className="font-bold mb-4">Hızlı Bağlantılar</h3>
               <ul className="space-y-2 text-gray-400">
                 <li><button onClick={() => handleNavigation('#')} className="hover:text-white text-left">Ana Sayfa</button></li>
-                <li><button onClick={() => handleNavigation('#bilgi')} className="hover:text-white text-left">Bilgilendirme</button></li>
-                <li><button onClick={() => handleNavigation('#haberler')} className="hover:text-white text-left">Haberler</button></li>
+                <li><a href="/bilgilendirme" className="hover:text-white text-left block">Bilgilendirme</a></li>
+                <li><a href="/haberler" className="hover:text-white text-left block">Haberler</a></li>
+                <li><a href="/eylemler" className="hover:text-white text-left block">Eylemler</a></li>
                 <li><button onClick={() => scrollToSection('iletisim')} className="hover:text-white text-left">İletişim</button></li>
               </ul>
             </div>
