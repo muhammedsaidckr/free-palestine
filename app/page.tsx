@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { useState } from "react";
 import { useI18n } from "@/components/I18nProvider";
+import { Timeline } from "@/components/Timeline";
 
 export default function Home() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -339,36 +340,7 @@ export default function Home() {
             </p>
           </div>
           
-          <div className="space-y-8">
-            <div className="flex items-start space-x-4">
-              <div className="w-4 h-4 bg-[#CE1126] rounded-full mt-1 flex-shrink-0"></div>
-              <div>
-                <h3 className="font-bold text-gray-900">{t('history.nakba.title')}</h3>
-                <p className="text-gray-600">{t('history.nakba.description')}</p>
-              </div>
-            </div>
-            <div className="flex items-start space-x-4">
-              <div className="w-4 h-4 bg-[#007A3D] rounded-full mt-1 flex-shrink-0"></div>
-              <div>
-                <h3 className="font-bold text-gray-900">{t('history.sixDayWar.title')}</h3>
-                <p className="text-gray-600">{t('history.sixDayWar.description')}</p>
-              </div>
-            </div>
-            <div className="flex items-start space-x-4">
-              <div className="w-4 h-4 bg-[#CE1126] rounded-full mt-1 flex-shrink-0"></div>
-              <div>
-                <h3 className="font-bold text-gray-900">{t('history.gazaBlockade.title')}</h3>
-                <p className="text-gray-600">{t('history.gazaBlockade.description')}</p>
-              </div>
-            </div>
-            <div className="flex items-start space-x-4">
-              <div className="w-4 h-4 bg-[#007A3D] rounded-full mt-1 flex-shrink-0"></div>
-              <div>
-                <h3 className="font-bold text-gray-900">{t('history.currentAttacks.title')}</h3>
-                <p className="text-gray-600">{t('history.currentAttacks.description')}</p>
-              </div>
-            </div>
-          </div>
+          <Timeline />
         </div>
       </section>
 
