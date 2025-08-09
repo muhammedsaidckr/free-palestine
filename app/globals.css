@@ -3,6 +3,11 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --palestine-red: #CE1126;
+  --palestine-white: #FFFFFF;
+  --palestine-black: #000000;
+  --palestine-green: #007A3D;
+  --turkey-red: #E30A17;
 }
 
 @theme inline {
