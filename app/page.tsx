@@ -2,10 +2,11 @@
 
 import Image from "next/image";
 import { useState } from "react";
+import { useI18n } from "@/components/I18nProvider";
 
 export default function Home() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [currentLanguage, setCurrentLanguage] = useState('TR');
+  const { language, setLanguage, t } = useI18n();
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -29,30 +30,30 @@ export default function Home() {
     }
   };
 
-  const handleLanguageToggle = (language: string) => {
-    setCurrentLanguage(language);
+  const handleLanguageToggle = (lang: 'tr' | 'en') => {
+    setLanguage(lang);
   };
 
   const handleShare = () => {
     if (navigator.share) {
       navigator.share({
-        title: 'Özgür Filistin - Free Palestine Türkiye',
-        text: 'Filistin için birlikte duralım. Türkiye\'den Filistin\'e destek.',
+        title: t('messages.shareTitle'),
+        text: t('messages.shareText'),
         url: window.location.href
       }).catch(console.error);
     } else {
       navigator.clipboard.writeText(window.location.href)
-        .then(() => alert('Link kopyalandı!'))
-        .catch(() => alert('Link kopyalanamadı'));
+        .then(() => alert(t('messages.linkCopied')))
+        .catch(() => alert(t('messages.linkCopyFailed')));
     }
   };
 
   const handlePetition = () => {
-    alert('Dilekçe imzalama özelliği yakında aktif olacak!');
+    alert(t('messages.petitionSoon'));
   };
 
   const handleBoycottList = () => {
-    alert('Boykot listesi yakında yayınlanacak!');
+    alert(t('messages.boycottSoon'));
   };
   return (
     <div className="min-h-screen bg-white">
@@ -76,11 +77,11 @@ export default function Home() {
             
             {/* Navigation */}
             <nav className="hidden md:flex space-x-8">
-              <button onClick={() => handleNavigation('#')} className="text-gray-900 hover:text-[#CE1126] font-medium cursor-pointer">Ana Sayfa</button>
-              <a href="/bilgilendirme" className="text-gray-700 hover:text-[#CE1126] font-medium">Bilgilendirme</a>
-              <a href="/haberler" className="text-gray-700 hover:text-[#CE1126] font-medium">Haberler</a>
-              <a href="/eylemler" className="text-gray-700 hover:text-[#CE1126] font-medium">Eylemler</a>
-              <button onClick={() => scrollToSection('iletisim')} className="text-gray-700 hover:text-[#CE1126] font-medium cursor-pointer">İletişim</button>
+              <button onClick={() => handleNavigation('#')} className="text-gray-900 hover:text-[#CE1126] font-medium cursor-pointer">{t('nav.home')}</button>
+              <a href="/bilgilendirme" className="text-gray-700 hover:text-[#CE1126] font-medium">{t('nav.information')}</a>
+              <a href="/haberler" className="text-gray-700 hover:text-[#CE1126] font-medium">{t('nav.news')}</a>
+              <a href="/eylemler" className="text-gray-700 hover:text-[#CE1126] font-medium">{t('nav.actions')}</a>
+              <button onClick={() => scrollToSection('iletisim')} className="text-gray-700 hover:text-[#CE1126] font-medium cursor-pointer">{t('nav.contact')}</button>
             </nav>
             
             {/* Desktop Language Toggle & Mobile Menu Button */}
@@ -88,9 +89,9 @@ export default function Home() {
               {/* Language Toggle - hidden on mobile */}
               <div className="hidden sm:flex space-x-2">
                 <button 
-                  onClick={() => handleLanguageToggle('TR')}
+                  onClick={() => handleLanguageToggle('tr')}
                   className={`px-3 py-1 text-sm font-medium rounded transition-colors ${
-                    currentLanguage === 'TR' 
+                    language === 'tr' 
                       ? 'bg-[#CE1126] text-white' 
                       : 'text-gray-600 hover:text-[#CE1126]'
                   }`}
@@ -98,9 +99,9 @@ export default function Home() {
                   TR
                 </button>
                 <button 
-                  onClick={() => handleLanguageToggle('EN')}
+                  onClick={() => handleLanguageToggle('en')}
                   className={`px-3 py-1 text-sm font-medium rounded transition-colors ${
-                    currentLanguage === 'EN' 
+                    language === 'en' 
                       ? 'bg-[#CE1126] text-white' 
                       : 'text-gray-600 hover:text-[#CE1126]'
                   }`}
@@ -159,34 +160,34 @@ export default function Home() {
                 onClick={() => handleNavigation('#')}
                 className="block w-full text-left px-4 py-3 text-gray-900 hover:bg-gray-50 hover:text-[#CE1126] font-medium border-l-4 border-[#CE1126]"
               >
-                Ana Sayfa
+                {t('nav.home')}
               </button>
               <a
                 href="/bilgilendirme"
                 className="block w-full text-left px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#CE1126] font-medium border-l-4 border-transparent hover:border-[#CE1126]"
                 onClick={closeMobileMenu}
               >
-                Bilgilendirme
+                {t('nav.information')}
               </a>
               <a
                 href="/haberler"
                 className="block w-full text-left px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#CE1126] font-medium border-l-4 border-transparent hover:border-[#CE1126]"
                 onClick={closeMobileMenu}
               >
-                Haberler
+                {t('nav.news')}
               </a>
               <a
                 href="/eylemler"
                 className="block w-full text-left px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#CE1126] font-medium border-l-4 border-transparent hover:border-[#CE1126]"
                 onClick={closeMobileMenu}
               >
-                Eylemler
+                {t('nav.actions')}
               </a>
               <button
                 onClick={() => scrollToSection('iletisim')}
                 className="block w-full text-left px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#CE1126] font-medium border-l-4 border-transparent hover:border-[#CE1126]"
               >
-                İletişim
+                {t('nav.contact')}
               </button>
             </nav>
             
@@ -194,9 +195,9 @@ export default function Home() {
             <div className="px-4 py-4 border-t border-gray-200">
               <div className="flex space-x-2">
                 <button 
-                  onClick={() => handleLanguageToggle('TR')}
+                  onClick={() => handleLanguageToggle('tr')}
                   className={`flex-1 px-3 py-2 text-sm font-medium rounded transition-colors ${
-                    currentLanguage === 'TR'
+                    language === 'tr'
                       ? 'bg-[#CE1126] text-white'
                       : 'text-gray-600 border border-gray-300 hover:border-[#CE1126] hover:text-[#CE1126]'
                   }`}
@@ -204,9 +205,9 @@ export default function Home() {
                   TR
                 </button>
                 <button 
-                  onClick={() => handleLanguageToggle('EN')}
+                  onClick={() => handleLanguageToggle('en')}
                   className={`flex-1 px-3 py-2 text-sm font-medium rounded transition-colors ${
-                    currentLanguage === 'EN'
+                    language === 'en'
                       ? 'bg-[#CE1126] text-white'
                       : 'text-gray-600 border border-gray-300 hover:border-[#CE1126] hover:text-[#CE1126]'
                   }`}
@@ -218,7 +219,7 @@ export default function Home() {
             
             {/* Social Links */}
             <div className="px-4 py-4 border-t border-gray-200">
-              <h3 className="text-sm font-medium text-gray-900 mb-2">Takip Et</h3>
+              <h3 className="text-sm font-medium text-gray-900 mb-2">{t('footer.follow')}</h3>
               <div className="flex space-x-4">
                 <button 
                   onClick={() => window.open('https://instagram.com/ozgurfilistin', '_blank')}
@@ -271,24 +272,23 @@ export default function Home() {
         {/* Content */}
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-4xl sm:text-6xl font-bold text-white mb-6 drop-shadow-lg">
-            Filistin İçin <span className="text-[#CE1126]">Birlikte</span> Duralım
+            {t('hero.title')} <span className="text-[#CE1126]">{t('hero.titleHighlight')}</span> {t('hero.titleEnd')}
           </h1>
           <p className="text-xl text-white mb-8 max-w-3xl mx-auto drop-shadow-md">
-            58,573+ canın kaybedildiği, 139,607+ kişinin yaralandığı Gazze&apos;de süren insani krize 
-            karşı Türkiye&apos;den ses çıkarıyoruz. Sessiz kalmayacağız, umudunu kaybetmeyeceğiz.
+            {t('hero.description')}
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button 
               onClick={() => scrollToSection('hareket')}
               className="bg-[#CE1126] text-white px-8 py-3 rounded-lg font-semibold hover:bg-[#B00E20] transition-colors shadow-lg"
             >
-              Harekete Geç
+              {t('hero.actionButton')}
             </button>
             <button 
               onClick={() => scrollToSection('bilgi')}
               className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-[#CE1126] transition-colors shadow-lg"
             >
-              Bilgi Al
+              {t('hero.infoButton')}
             </button>
           </div>
         </div>
@@ -298,32 +298,32 @@ export default function Home() {
       <section id="bilgi" className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Güncel Durum</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">{t('situation.title')}</h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Filistin&apos;de yaşanan insani krizin güncel verileri
+              {t('situation.subtitle')}
             </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="bg-white p-6 rounded-lg shadow-md text-center">
               <div className="text-3xl font-bold text-[#CE1126] mb-2">58,573+</div>
-              <div className="text-gray-600">Hayatını kaybeden Filistinli</div>
-              <div className="text-xs text-gray-500 mt-1">(Ağustos 2025)</div>
+              <div className="text-gray-600">{t('situation.casualties')}</div>
+              <div className="text-xs text-gray-500 mt-1">{t('situation.date')}</div>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md text-center">
               <div className="text-3xl font-bold text-[#CE1126] mb-2">139,607+</div>
-              <div className="text-gray-600">Yaralanan kişi</div>
-              <div className="text-xs text-gray-500 mt-1">(Ağustos 2025)</div>
+              <div className="text-gray-600">{t('situation.injured')}</div>
+              <div className="text-xs text-gray-500 mt-1">{t('situation.date')}</div>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md text-center">
               <div className="text-3xl font-bold text-[#CE1126] mb-2">90%</div>
-              <div className="text-gray-600">Yerinden edilmiş nüfus</div>
-              <div className="text-xs text-gray-500 mt-1">Gazze&apos;de</div>
+              <div className="text-gray-600">{t('situation.displaced')}</div>
+              <div className="text-xs text-gray-500 mt-1">{t('situation.displacedLocation')}</div>
             </div>
             <div className="bg-white p-6 rounded-lg shadow-md text-center">
               <div className="text-3xl font-bold text-[#CE1126] mb-2">45,000</div>
-              <div className="text-gray-600">Ton yardım malzemesi</div>
-              <div className="text-xs text-gray-500 mt-1">Türkiye&apos;den</div>
+              <div className="text-gray-600">{t('situation.aid')}</div>
+              <div className="text-xs text-gray-500 mt-1">{t('situation.aidFrom')}</div>
             </div>
           </div>
         </div>
@@ -333,9 +333,9 @@ export default function Home() {
       <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Filistin&apos;in Tarihi</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">{t('history.title')}</h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Temel tarihsel olaylar ve dönüm noktaları
+              {t('history.subtitle')}
             </p>
           </div>
           
@@ -343,29 +343,29 @@ export default function Home() {
             <div className="flex items-start space-x-4">
               <div className="w-4 h-4 bg-[#CE1126] rounded-full mt-1 flex-shrink-0"></div>
               <div>
-                <h3 className="font-bold text-gray-900">1948 - Nakba (Felaket)</h3>
-                <p className="text-gray-600">İsrail&apos;in kurulması ve 750,000 Filistinlinin yerlerinden edilmesi</p>
+                <h3 className="font-bold text-gray-900">{t('history.nakba.title')}</h3>
+                <p className="text-gray-600">{t('history.nakba.description')}</p>
               </div>
             </div>
             <div className="flex items-start space-x-4">
               <div className="w-4 h-4 bg-[#007A3D] rounded-full mt-1 flex-shrink-0"></div>
               <div>
-                <h3 className="font-bold text-gray-900">1967 - Altı Gün Savaşı</h3>
-                <p className="text-gray-600">Batı Şeria, Gazze, Doğu Kudüs ve Golan Tepeleri&apos;nin işgali</p>
+                <h3 className="font-bold text-gray-900">{t('history.sixDayWar.title')}</h3>
+                <p className="text-gray-600">{t('history.sixDayWar.description')}</p>
               </div>
             </div>
             <div className="flex items-start space-x-4">
               <div className="w-4 h-4 bg-[#CE1126] rounded-full mt-1 flex-shrink-0"></div>
               <div>
-                <h3 className="font-bold text-gray-900">2007 - Gazze Ablukası</h3>
-                <p className="text-gray-600">2.3 milyon insanın açık hava hapishanesi yaşamı</p>
+                <h3 className="font-bold text-gray-900">{t('history.gazaBlockade.title')}</h3>
+                <p className="text-gray-600">{t('history.gazaBlockade.description')}</p>
               </div>
             </div>
             <div className="flex items-start space-x-4">
               <div className="w-4 h-4 bg-[#007A3D] rounded-full mt-1 flex-shrink-0"></div>
               <div>
-                <h3 className="font-bold text-gray-900">2023-2025 - Gazze Saldırıları</h3>
-                <p className="text-gray-600">58,573+ can kaybı, 139,607+ yaralı, nüfusun %90&apos;ı yerinden edildi</p>
+                <h3 className="font-bold text-gray-900">{t('history.currentAttacks.title')}</h3>
+                <p className="text-gray-600">{t('history.currentAttacks.description')}</p>
               </div>
             </div>
           </div>
@@ -376,41 +376,41 @@ export default function Home() {
       <section id="hareket" className="py-20 bg-[#CE1126] text-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold mb-4">Sesini Yükselt</h2>
+            <h2 className="text-3xl font-bold mb-4">{t('action.title')}</h2>
             <p className="text-lg max-w-2xl mx-auto">
-              Filistin için yapabileceğin eylemler
+              {t('action.subtitle')}
             </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="bg-white/10 p-6 rounded-lg">
-              <h3 className="text-xl font-bold mb-4">📢 Farkındalık Yarat</h3>
-              <p className="mb-4">Sosyal medyada paylaş, çevrende konuş</p>
+              <h3 className="text-xl font-bold mb-4">{t('action.awareness.title')}</h3>
+              <p className="mb-4">{t('action.awareness.description')}</p>
               <button 
                 onClick={handleShare}
                 className="bg-white text-[#CE1126] px-4 py-2 rounded font-medium hover:bg-gray-100 transition-colors"
               >
-                Paylaş
+                {t('action.awareness.button')}
               </button>
             </div>
             <div className="bg-white/10 p-6 rounded-lg">
-              <h3 className="text-xl font-bold mb-4">✍️ Dilekçe İmzala</h3>
-              <p className="mb-4">Hükümet ve uluslararası kuruluşlara sesini duyur</p>
+              <h3 className="text-xl font-bold mb-4">{t('action.petition.title')}</h3>
+              <p className="mb-4">{t('action.petition.description')}</p>
               <button 
                 onClick={handlePetition}
                 className="bg-white text-[#CE1126] px-4 py-2 rounded font-medium hover:bg-gray-100 transition-colors"
               >
-                İmzala
+                {t('action.petition.button')}
               </button>
             </div>
             <div className="bg-white/10 p-6 rounded-lg">
-              <h3 className="text-xl font-bold mb-4">🛒 Ekonomik Direniş</h3>
-              <p className="mb-4">BDS hareketiyle dayanışma: Boykot, Yaptırım, Yatırım Çekme</p>
+              <h3 className="text-xl font-bold mb-4">{t('action.boycott.title')}</h3>
+              <p className="mb-4">{t('action.boycott.description')}</p>
               <button 
                 onClick={handleBoycottList}
                 className="bg-white text-[#CE1126] px-4 py-2 rounded font-medium hover:bg-gray-100 transition-colors"
               >
-                BDS Listesi
+                {t('action.boycott.button')}
               </button>
             </div>
           </div>
@@ -421,59 +421,59 @@ export default function Home() {
       <section id="haberler" className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Son Haberler</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">{t('news.title')}</h2>
             <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Filistin&apos;den güncel gelişmeler
+              {t('news.subtitle')}
             </p>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
               <div className="p-6">
-                <div className="text-sm text-red-600 font-medium mb-2">ACİL</div>
-                <h3 className="font-bold text-gray-900 mb-2">Gazze&apos;de Açlık Krizi Derinleşiyor</h3>
-                <p className="text-gray-600 text-sm">BM uzmanları Gazze&apos;deki açlık krizinin facia boyutlarında olduğunu bildirdi. Her 3 kişiden birinin günlerce aç kaldığı rapor edildi.</p>
-                <div className="text-xs text-gray-400 mt-2">BM Raporu - Ağustos 2025</div>
+                <div className="text-sm text-red-600 font-medium mb-2">{t('news.hunger.category')}</div>
+                <h3 className="font-bold text-gray-900 mb-2">{t('news.hunger.title')}</h3>
+                <p className="text-gray-600 text-sm">{t('news.hunger.content')}</p>
+                <div className="text-xs text-gray-400 mt-2">{t('news.hunger.source')}</div>
               </div>
             </div>
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
               <div className="p-6">
-                <div className="text-sm text-blue-600 font-medium mb-2">TÜRKİYE</div>
-                <h3 className="font-bold text-gray-900 mb-2">İstanbul&apos;da Filistin Dayanışması</h3>
-                <p className="text-gray-600 text-sm">15 STK&apos;nın oluşturduğu Filistin Dayanışma Platformu İstanbul&apos;da meşaleli yürüyüş düzenledi. &quot;Gazze için Umut Işığı Ol&quot; sloganıyla binlerce kişi yürüdü.</p>
-                <div className="text-xs text-gray-400 mt-2">Ağustos 2025</div>
+                <div className="text-sm text-blue-600 font-medium mb-2">{t('news.solidarity.category')}</div>
+                <h3 className="font-bold text-gray-900 mb-2">{t('news.solidarity.title')}</h3>
+                <p className="text-gray-600 text-sm">{t('news.solidarity.content')}</p>
+                <div className="text-xs text-gray-400 mt-2">{t('news.solidarity.source')}</div>
               </div>
             </div>
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
               <div className="p-6">
-                <div className="text-sm text-green-600 font-medium mb-2">YARDIM</div>
-                <h3 className="font-bold text-gray-900 mb-2">Türkiye&apos;den 45,000 Ton Yardım</h3>
-                <p className="text-gray-600 text-sm">Cumhurbaşkanı Erdoğan, Türkiye&apos;nin Gazze&apos;ye toplam 45,000 ton insani yardım malzemesi gönderdiğini açıkladı. Türkiye Filistin&apos;in en büyük yardım ortaklarından biri.</p>
-                <div className="text-xs text-gray-400 mt-2">T.C. Cumhurbaşkanlığı</div>
+                <div className="text-sm text-green-600 font-medium mb-2">{t('news.aid.category')}</div>
+                <h3 className="font-bold text-gray-900 mb-2">{t('news.aid.title')}</h3>
+                <p className="text-gray-600 text-sm">{t('news.aid.content')}</p>
+                <div className="text-xs text-gray-400 mt-2">{t('news.aid.source')}</div>
               </div>
             </div>
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
               <div className="p-6">
-                <div className="text-sm text-purple-600 font-medium mb-2">SAĞLIK</div>
-                <h3 className="font-bold text-gray-900 mb-2">Çocuklarda Yetersiz Beslenme Artıyor</h3>
-                <p className="text-gray-600 text-sm">5 yaş altı çocuklarda akut yetersiz beslenme oranı %9&apos;a yükseldi. Gazze Şehri&apos;nde bu oran %16&apos;ya çıktı. 100,000 kadın ve çocuk ciddi yetersiz beslenme yaşıyor.</p>
-                <div className="text-xs text-gray-400 mt-2">WHO Raporu</div>
+                <div className="text-sm text-purple-600 font-medium mb-2">{t('news.malnutrition.category')}</div>
+                <h3 className="font-bold text-gray-900 mb-2">{t('news.malnutrition.title')}</h3>
+                <p className="text-gray-600 text-sm">{t('news.malnutrition.content')}</p>
+                <div className="text-xs text-gray-400 mt-2">{t('news.malnutrition.source')}</div>
               </div>
             </div>
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
               <div className="p-6">
-                <div className="text-sm text-orange-600 font-medium mb-2">DİPLOMASİ</div>
-                <h3 className="font-bold text-gray-900 mb-2">Uluslararası Tanınma Hamlesi</h3>
-                <p className="text-gray-600 text-sm">İngiltere, Fransa ve Kanada Filistin devletini tanımayı planlıyor. Gazze&apos;deki açlığa karşı uluslararası baskı artıyor.</p>
-                <div className="text-xs text-gray-400 mt-2">Diplomatik Kaynaklar</div>
+                <div className="text-sm text-orange-600 font-medium mb-2">{t('news.diplomacy.category')}</div>
+                <h3 className="font-bold text-gray-900 mb-2">{t('news.diplomacy.title')}</h3>
+                <p className="text-gray-600 text-sm">{t('news.diplomacy.content')}</p>
+                <div className="text-xs text-gray-400 mt-2">{t('news.diplomacy.source')}</div>
               </div>
             </div>
             <div className="bg-white rounded-lg shadow-md overflow-hidden">
               <div className="p-6">
-                <div className="text-sm text-red-600 font-medium mb-2">İNSANİ KRİZ</div>
-                <h3 className="font-bold text-gray-900 mb-2">Yardım Dağıtımında Saldırı</h3>
-                <p className="text-gray-600 text-sm">Mayıs&apos;tan beri 1,000&apos;den fazla Filistinli yardım almaya çalışırken hayatını kaybetti. Çoğu yardım dağıtım merkezlerinde öldürüldü.</p>
-                <div className="text-xs text-gray-400 mt-2">BM İnsan Hakları Ofisi</div>
+                <div className="text-sm text-red-600 font-medium mb-2">{t('news.attacks.category')}</div>
+                <h3 className="font-bold text-gray-900 mb-2">{t('news.attacks.title')}</h3>
+                <p className="text-gray-600 text-sm">{t('news.attacks.content')}</p>
+                <div className="text-xs text-gray-400 mt-2">{t('news.attacks.source')}</div>
               </div>
             </div>
           </div>
@@ -495,28 +495,28 @@ export default function Home() {
                 />
                 <span className="text-xl font-bold">Özgür Filistin</span>
               </div>
-              <p className="text-gray-400">Türkiye&apos;den Filistin&apos;e destek platformu</p>
+              <p className="text-gray-400">{t('footer.description')}</p>
             </div>
             <div>
-              <h3 className="font-bold mb-4">Hızlı Bağlantılar</h3>
+              <h3 className="font-bold mb-4">{t('footer.quickLinks')}</h3>
               <ul className="space-y-2 text-gray-400">
-                <li><button onClick={() => handleNavigation('#')} className="hover:text-white text-left">Ana Sayfa</button></li>
-                <li><a href="/bilgilendirme" className="hover:text-white text-left block">Bilgilendirme</a></li>
-                <li><a href="/haberler" className="hover:text-white text-left block">Haberler</a></li>
-                <li><a href="/eylemler" className="hover:text-white text-left block">Eylemler</a></li>
-                <li><button onClick={() => scrollToSection('iletisim')} className="hover:text-white text-left">İletişim</button></li>
+                <li><button onClick={() => handleNavigation('#')} className="hover:text-white text-left">{t('nav.home')}</button></li>
+                <li><a href="/bilgilendirme" className="hover:text-white text-left block">{t('nav.information')}</a></li>
+                <li><a href="/haberler" className="hover:text-white text-left block">{t('nav.news')}</a></li>
+                <li><a href="/eylemler" className="hover:text-white text-left block">{t('nav.actions')}</a></li>
+                <li><button onClick={() => scrollToSection('iletisim')} className="hover:text-white text-left">{t('nav.contact')}</button></li>
               </ul>
             </div>
             <div>
-              <h3 className="font-bold mb-4">Eylemler</h3>
+              <h3 className="font-bold mb-4">{t('footer.actions')}</h3>
               <ul className="space-y-2 text-gray-400">
-                <li><button onClick={handlePetition} className="hover:text-white text-left">Dilekçe İmzala</button></li>
-                <li><button onClick={handleBoycottList} className="hover:text-white text-left">Boykot Listesi</button></li>
-                <li><button onClick={handleShare} className="hover:text-white text-left">Farkındalık</button></li>
+                <li><button onClick={handlePetition} className="hover:text-white text-left">{t('footer.petition')}</button></li>
+                <li><button onClick={handleBoycottList} className="hover:text-white text-left">{t('footer.boycottList')}</button></li>
+                <li><button onClick={handleShare} className="hover:text-white text-left">{t('footer.awareness')}</button></li>
               </ul>
             </div>
             <div>
-              <h3 className="font-bold mb-4">İletişim</h3>
+              <h3 className="font-bold mb-4">{t('footer.contact')}</h3>
               <ul className="space-y-2 text-gray-400">
                 <li>info@ozgurfilistin.tr</li>
                 <li>@OzgurFilistin</li>
@@ -525,7 +525,7 @@ export default function Home() {
             </div>
           </div>
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
-            <p>Made with ❤️ for Palestine by Turkish supporters</p>
+            <p>{t('footer.madeWith')}</p>
           </div>
         </div>
       </footer>
