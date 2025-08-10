@@ -60,9 +60,6 @@ export default function Home() {
     }
   };
 
-  const handleBoycottList = () => {
-    alert(t('messages.boycottSoon'));
-  };
 
   useEffect(() => {
     const fetchHomePageNews = async () => {
@@ -128,6 +125,7 @@ export default function Home() {
               <a href="/bilgilendirme" className="text-gray-700 hover:text-[#CE1126] font-medium">{t('nav.information')}</a>
               <a href="/haberler" className="text-gray-700 hover:text-[#CE1126] font-medium">{t('nav.news')}</a>
               <a href="/eylemler" className="text-gray-700 hover:text-[#CE1126] font-medium">{t('nav.actions')}</a>
+              <a href="/boykot" className="text-gray-700 hover:text-[#CE1126] font-medium">Boykot</a>
               <button onClick={() => scrollToSection('iletisim')} className="text-gray-700 hover:text-[#CE1126] font-medium cursor-pointer">{t('nav.contact')}</button>
             </nav>
             
@@ -229,6 +227,13 @@ export default function Home() {
                 onClick={closeMobileMenu}
               >
                 {t('nav.actions')}
+              </a>
+              <a
+                href="/boykot"
+                className="block w-full text-left px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#CE1126] font-medium border-l-4 border-transparent hover:border-[#CE1126]"
+                onClick={closeMobileMenu}
+              >
+                Boykot / Boycott
               </a>
               <button
                 onClick={() => scrollToSection('iletisim')}
@@ -424,12 +429,12 @@ export default function Home() {
             <div className="bg-white/10 p-6 rounded-lg">
               <h3 className="text-xl font-bold mb-4">{t('action.boycott.title')}</h3>
               <p className="mb-4">{t('action.boycott.description')}</p>
-              <button 
-                onClick={handleBoycottList}
-                className="bg-white text-[#CE1126] px-4 py-2 rounded font-medium hover:bg-gray-100 transition-colors"
+              <a 
+                href="/boykot"
+                className="bg-white text-[#CE1126] px-4 py-2 rounded font-medium hover:bg-gray-100 transition-colors inline-block text-center"
               >
                 {t('action.boycott.button')}
-              </button>
+              </a>
             </div>
           </div>
         </div>
@@ -540,7 +545,7 @@ export default function Home() {
               <h3 className="font-bold mb-4">{t('footer.actions')}</h3>
               <ul className="space-y-2 text-gray-400">
                 <li><button onClick={scrollToPetition} className="hover:text-white text-left">{t('footer.petition')}</button></li>
-                <li><button onClick={handleBoycottList} className="hover:text-white text-left">{t('footer.boycottList')}</button></li>
+                <li><a href="/boykot" className="hover:text-white text-left block">{t('footer.boycottList')}</a></li>
                 <li><button onClick={handleShare} className="hover:text-white text-left">{t('footer.awareness')}</button></li>
               </ul>
             </div>
