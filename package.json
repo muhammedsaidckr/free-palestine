@@ -6,7 +6,10 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "pages:build": "next build",
+    "pages:dev": "wrangler pages dev .next --compatibility-date=2024-12-01",
+    "pages:deploy": "wrangler pages deploy .next"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.54.0",

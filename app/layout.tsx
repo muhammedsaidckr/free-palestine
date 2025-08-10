@@ -107,7 +107,7 @@ export default function RootLayout({
         <ServiceWorkerRegistration />
         <I18nProvider>
           {children}
-          <Analytics />
+          {process.env.NODE_ENV === 'production' && process.env.VERCEL && <Analytics />}
         </I18nProvider>
       </body>
     </html>
