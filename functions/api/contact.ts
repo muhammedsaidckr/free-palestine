@@ -6,8 +6,54 @@ interface Env extends Record<string, string | undefined> {
   NEXT_PUBLIC_SUPABASE_ANON_KEY: string;
 }
 
+const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
+
+function getRateLimitKey(request: Request): string {
+  const forwarded = request.headers.get('cf-connecting-ip');
+  const realIp = request.headers.get('x-real-ip');
+  const forwardedFor = request.headers.get('x-forwarded-for');
+  
+  return forwarded || realIp || forwardedFor?.split(',')[0] || 'unknown';
+}
+
+function isRateLimited(key: string, maxRequests: number = 5, windowMs: number = 300000): boolean {
+  const now = Date.now();
+  const entry = rateLimitStore.get(key);
+  
+  if (!entry || now > entry.resetTime) {
+    rateLimitStore.set(key, { count: 1, resetTime: now + windowMs });
+    return false;
+  }
+  
+  if (entry.count >= maxRequests) {
+    return true;
+  }
+  
+  entry.count++;
+  return false;
+}
+
+function cleanupRateLimit(): void {
+  const now = Date.now();
+  for (const [key, entry] of rateLimitStore.entries()) {
+    if (now > entry.resetTime) {
+      rateLimitStore.delete(key);
+    }
+  }
+}
+
 export async function onRequestPost(context: { request: Request; env: Env }) {
   try {
+    cleanupRateLimit();
+    
+    const rateLimitKey = getRateLimitKey(context.request);
+    if (isRateLimited(rateLimitKey)) {
+      return Response.json(
+        { error: 'Too many requests. Please try again later.' },
+        { status: 429 }
+      );
+    }
+
     const supabase = createSupabaseClient(context.env);
     const body = await context.request.json() as any;
     const { name, email, subject, message } = body;
