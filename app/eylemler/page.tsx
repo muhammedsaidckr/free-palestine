@@ -2,12 +2,32 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PetitionForm from "@/components/PetitionForm";
 
 export default function ActionsPage() {
   const [showBoycottList, setShowBoycottList] = useState(false);
-  const [petitionCount, setPetitionCount] = useState<number>(2847);
+  const [petitionCount, setPetitionCount] = useState<number>(0);
+  const [isLoadingCount, setIsLoadingCount] = useState(true);
+
+  const fetchPetitionCount = async () => {
+    try {
+      const response = await fetch('/api/petition');
+      if (response.ok) {
+        const data = await response.json();
+        setPetitionCount(data.totalCount);
+      }
+    } catch (error) {
+      console.error('Failed to fetch petition count:', error);
+      setPetitionCount(2847); // Fallback to original static value
+    } finally {
+      setIsLoadingCount(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchPetitionCount();
+  }, []);
 
   const handlePetitionSuccess = (totalCount: number) => {
     setPetitionCount(totalCount);
@@ -247,7 +267,9 @@ export default function ActionsPage() {
             <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">Toplu Etkimiz</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
               <div>
-                <div className="text-3xl font-bold text-[#CE1126]">{petitionCount.toLocaleString()}</div>
+                <div className="text-3xl font-bold text-[#CE1126]">
+                  {isLoadingCount ? '...' : petitionCount.toLocaleString()}
+                </div>
                 <div className="text-gray-600">İmza Toplandı</div>
               </div>
               <div>
