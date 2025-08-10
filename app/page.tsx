@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { useI18n } from "@/components/I18nProvider";
 import { Timeline } from "@/components/Timeline";
 import { newsService, NewsItem } from "@/lib/newsService";
+import PetitionForm from "@/components/PetitionForm";
 
 export default function Home() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -52,8 +53,11 @@ export default function Home() {
     }
   };
 
-  const handlePetition = () => {
-    alert(t('messages.petitionSoon'));
+  const scrollToPetition = () => {
+    const element = document.getElementById('petition');
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   const handleBoycottList = () => {
@@ -411,7 +415,7 @@ export default function Home() {
               <h3 className="text-xl font-bold mb-4">{t('action.petition.title')}</h3>
               <p className="mb-4">{t('action.petition.description')}</p>
               <button 
-                onClick={handlePetition}
+                onClick={scrollToPetition}
                 className="bg-white text-[#CE1126] px-4 py-2 rounded font-medium hover:bg-gray-100 transition-colors"
               >
                 {t('action.petition.button')}
@@ -489,6 +493,22 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Petition Section */}
+      <section id="petition" className="py-20 bg-gray-100">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">{t('petition.title')}</h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              {t('petition.description')}
+            </p>
+          </div>
+          
+          <div className="bg-white rounded-lg shadow-lg p-8">
+            <PetitionForm />
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer id="iletisim" className="bg-gray-900 text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -519,7 +539,7 @@ export default function Home() {
             <div>
               <h3 className="font-bold mb-4">{t('footer.actions')}</h3>
               <ul className="space-y-2 text-gray-400">
-                <li><button onClick={handlePetition} className="hover:text-white text-left">{t('footer.petition')}</button></li>
+                <li><button onClick={scrollToPetition} className="hover:text-white text-left">{t('footer.petition')}</button></li>
                 <li><button onClick={handleBoycottList} className="hover:text-white text-left">{t('footer.boycottList')}</button></li>
                 <li><button onClick={handleShare} className="hover:text-white text-left">{t('footer.awareness')}</button></li>
               </ul>

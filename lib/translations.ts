@@ -132,6 +132,47 @@ export const translations: Translations = {
       follow: 'Takip Et'
     },
     
+    // Petition Section
+    petition: {
+      title: 'Filistin İçin Dilekçeyi İmzala',
+      description: 'Türk hükümetinden ve uluslararası toplumdan Filistin halkına yönelik adil politikalar talep et',
+      currentCount: 'Şu ana kadar imza sayısı',
+      signatures: 'imza',
+      form: {
+        firstName: 'Ad',
+        firstNamePlaceholder: 'Adınız',
+        lastName: 'Soyad',
+        lastNamePlaceholder: 'Soyadınız',
+        email: 'E-posta',
+        emailPlaceholder: 'ornek@email.com',
+        city: 'Şehir',
+        cityPlaceholder: 'İstanbul',
+        optional: '(isteğe bağlı)',
+        submitButton: 'Dilekçeyi İmzala',
+        submitting: 'İmzalanıyor...',
+        privacy: 'E-posta adresiniz güvenli tutulacak ve sadece bu amaçla kullanılacaktır.'
+      },
+      success: {
+        title: 'Teşekkürler!',
+        message: 'İmzan başarıyla kaydedildi.',
+        totalCount: 'Toplam {count} kişi imzaladı',
+        shareText: 'Filistin için dilekçeyi imzaladım. Sen de imzala!',
+        shareButton: 'Sosyal Medyada Paylaş',
+        signAnother: 'Başkası için imzala'
+      },
+      errors: {
+        emailRequired: 'E-posta adresi gerekli',
+        firstNameRequired: 'Ad gerekli',
+        lastNameRequired: 'Soyad gerekli',
+        invalidEmail: 'Geçerli bir e-posta adresi girin',
+        firstNameTooShort: 'Ad en az 2 karakter olmalı',
+        lastNameTooShort: 'Soyad en az 2 karakter olmalı',
+        alreadySigned: 'Bu e-posta adresi zaten imzalamış',
+        submitFailed: 'İmzalama başarısız oldu, lütfen tekrar deneyin',
+        networkError: 'Bağlantı hatası, lütfen tekrar deneyin'
+      }
+    },
+
     // Alerts and Messages
     messages: {
       linkCopied: 'Link kopyalandı!',
@@ -272,6 +313,47 @@ export const translations: Translations = {
       contact: 'Contact',
       madeWith: 'Made with ❤️ for Palestine by Turkish supporters',
       follow: 'Follow'
+    },
+
+    // Petition Section
+    petition: {
+      title: 'Sign the Petition for Palestine',
+      description: 'Demand fair policies for the Palestinian people from the Turkish government and international community',
+      currentCount: 'Signatures so far',
+      signatures: 'signatures',
+      form: {
+        firstName: 'First Name',
+        firstNamePlaceholder: 'Your first name',
+        lastName: 'Last Name',
+        lastNamePlaceholder: 'Your last name',
+        email: 'Email',
+        emailPlaceholder: 'example@email.com',
+        city: 'City',
+        cityPlaceholder: 'Istanbul',
+        optional: '(optional)',
+        submitButton: 'Sign Petition',
+        submitting: 'Signing...',
+        privacy: 'Your email will be kept secure and used only for this purpose.'
+      },
+      success: {
+        title: 'Thank you!',
+        message: 'Your signature has been successfully recorded.',
+        totalCount: 'Total {count} people signed',
+        shareText: 'I signed the petition for Palestine. You should sign too!',
+        shareButton: 'Share on Social Media',
+        signAnother: 'Sign for someone else'
+      },
+      errors: {
+        emailRequired: 'Email address is required',
+        firstNameRequired: 'First name is required',
+        lastNameRequired: 'Last name is required',
+        invalidEmail: 'Please enter a valid email address',
+        firstNameTooShort: 'First name must be at least 2 characters',
+        lastNameTooShort: 'Last name must be at least 2 characters',
+        alreadySigned: 'This email address has already signed',
+        submitFailed: 'Signing failed, please try again',
+        networkError: 'Connection error, please try again'
+      }
     },
     
     // Alerts and Messages
