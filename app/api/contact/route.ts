@@ -1,4 +1,6 @@
 import { NextResponse } from 'next/server';
+import { saveContact } from '@/lib/database';
+import { sendContactNotification, sendAutoReply } from '@/lib/emailService';
 
 export async function POST(request: Request) {
   try {
@@ -44,25 +46,35 @@ export async function POST(request: Request) {
       );
     }
 
-    // Here you would typically:
-    // 1. Save to database
-    // 2. Send email notification
-    // 3. Queue for processing, etc.
-    
-    // For now, we'll just log the message and return success
-    console.log('Contact form submission:', {
-      name,
-      email,
-      subject,
-      message,
-      timestamp: new Date().toISOString()
+    const contactData = { name, email, subject, message };
+
+    // Save to Supabase database
+    try {
+      await saveContact(contactData);
+      console.log('Contact saved to database successfully');
+    } catch (dbError) {
+      console.error('Database save failed:', dbError);
+      // Continue processing even if database fails
+    }
+
+    // Send email notifications (non-blocking)
+    Promise.allSettled([
+      sendContactNotification(contactData),
+      sendAutoReply(contactData)
+    ]).then(([notificationResult, autoReplyResult]) => {
+      if (notificationResult.status === 'fulfilled' && notificationResult.value.success) {
+        console.log('Admin notification sent successfully');
+      } else {
+        console.error('Admin notification failed:', notificationResult);
+      }
+
+      if (autoReplyResult.status === 'fulfilled' && autoReplyResult.value.success) {
+        console.log('Auto-reply sent successfully');
+      } else {
+        console.error('Auto-reply failed:', autoReplyResult);
+      }
     });
 
-    // In a real application, you might want to:
-    // - Save to a database (PostgreSQL, MongoDB, etc.)
-    // - Send an email using a service like SendGrid, AWS SES, etc.
-    // - Store in a queue for later processing
-    
     return NextResponse.json({
       success: true,
       message: 'Contact form submitted successfully'
