@@ -9,7 +9,7 @@
     "start": "next start",
     "lint": "next lint",
     "cf:preview": "npx @opennextjs/cloudflare preview",
-    "cf:deploy": "npx wrangler versions upload"
+    "cf:deploy": "npx @opennextjs/cloudflare deploy"
   },
   "dependencies": {
     "@opennextjs/cloudflare": "^1.6.5",
