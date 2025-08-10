@@ -16,7 +16,7 @@ export const translations: Translations = {
       title: 'Filistin İçin',
       titleHighlight: 'Birlikte',
       titleEnd: 'Duralım',
-      description: '58,573+ canın kaybedildiği, 139,607+ kişinin yaralandığı Gazze\'de süren insani krize karşı Türkiye\'den ses çıkarıyoruz. Sessiz kalmayacağız, umudunu kaybetmeyeceğiz.',
+      description: '58,573+ canın kaybedildiği, 139,607+ kişinin yaralandığı Gazze\'de süren insani krize karşı Türkiye\'den ses çıkarıyoruz. Sessiz kalmayacağız, umudumuzu kaybetmeyeceğiz.',
       actionButton: 'Harekete Geç',
       infoButton: 'Bilgi Al'
     },
