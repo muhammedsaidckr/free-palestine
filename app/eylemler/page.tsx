@@ -195,15 +195,6 @@ export default function ActionsPage() {
             <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">Daha Fazla Eylem</h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               
-              {/* Donation */}
-              <div className="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-lg">
-                <h3 className="text-xl font-bold text-gray-900 mb-3">💝 Bağış Yap</h3>
-                <p className="text-gray-600 mb-4">Güvenilir STK&apos;lar üzerinden Filistin&apos;e yardım et</p>
-                <button className="bg-purple-600 text-white px-4 py-2 rounded hover:bg-purple-700 transition-colors">
-                  Bağış Sayfası
-                </button>
-              </div>
-
               {/* Education */}
               <div className="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-lg">
                 <h3 className="text-xl font-bold text-gray-900 mb-3">📚 Eğit ve Öğren</h3>
@@ -254,7 +245,7 @@ export default function ActionsPage() {
           {/* Impact Statistics */}
           <section className="bg-gray-50 rounded-lg p-8">
             <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">Toplu Etkimiz</h2>
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
               <div>
                 <div className="text-3xl font-bold text-[#CE1126]">{petitionCount.toLocaleString()}</div>
                 <div className="text-gray-600">İmza Toplandı</div>
@@ -262,10 +253,6 @@ export default function ActionsPage() {
               <div>
                 <div className="text-3xl font-bold text-[#CE1126]">15,632</div>
                 <div className="text-gray-600">Sosyal Paylaşım</div>
-              </div>
-              <div>
-                <div className="text-3xl font-bold text-[#CE1126]">₺124,890</div>
-                <div className="text-gray-600">Bağış Toplandı</div>
               </div>
               <div>
                 <div className="text-3xl font-bold text-[#CE1126]">847</div>
