@@ -33,3 +33,22 @@ CREATE TABLE newsletter_subscriptions (
 CREATE INDEX idx_newsletter_email ON newsletter_subscriptions(email);
 CREATE INDEX idx_newsletter_created_at ON newsletter_subscriptions(created_at DESC);
 CREATE INDEX idx_newsletter_active ON newsletter_subscriptions(is_active);
+
+-- Create petition_signatures table
+CREATE TABLE petition_signatures (
+  id BIGSERIAL PRIMARY KEY,
+  email TEXT NOT NULL UNIQUE,
+  first_name TEXT NOT NULL,
+  last_name TEXT NOT NULL,
+  city TEXT,
+  ip_address TEXT,
+  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
+);
+
+-- Add RLS (Row Level Security) policies if needed
+-- ALTER TABLE petition_signatures ENABLE ROW LEVEL SECURITY;
+
+-- Create indexes for better performance
+CREATE INDEX idx_petition_email ON petition_signatures(email);
+CREATE INDEX idx_petition_created_at ON petition_signatures(created_at DESC);
+CREATE INDEX idx_petition_ip ON petition_signatures(ip_address);
