@@ -211,7 +211,7 @@ export default function ContactForm({ className = '', compact = false }: Contact
             value={formData.subject}
             onChange={handleInputChange}
             required
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#CE1126] focus:border-transparent"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#CE1126] focus:border-[#CE1126] text-gray-900 placeholder-gray-500"
             placeholder={t('contact.form.subjectPlaceholder')}
           />
         </div>

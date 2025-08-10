@@ -277,7 +277,7 @@ export default function PetitionForm({ onSignatureSuccess, className = '', compa
             value={formData.email}
             onChange={handleInputChange}
             required
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#CE1126] focus:border-transparent"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#CE1126] focus:border-[#CE1126] text-gray-900 placeholder-gray-500"
             placeholder={t('petition.form.emailPlaceholder')}
           />
         </div>
@@ -292,7 +292,7 @@ export default function PetitionForm({ onSignatureSuccess, className = '', compa
             name="city"
             value={formData.city}
             onChange={handleInputChange}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#CE1126] focus:border-transparent"
+            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#CE1126] focus:border-[#CE1126] text-gray-900 placeholder-gray-500"
             placeholder={t('petition.form.cityPlaceholder')}
           />
         </div>
