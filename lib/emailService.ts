@@ -70,3 +70,54 @@ export async function sendAutoReply(data: ContactFormData) {
     return { success: false, error: 'Failed to send auto-reply' };
   }
 }
+
+interface NewsletterWelcomeData {
+  email: string;
+  firstName?: string;
+}
+
+export async function sendNewsletterWelcome(data: NewsletterWelcomeData) {
+  if (!process.env.RESEND_API_KEY) {
+    console.warn('RESEND_API_KEY not configured, skipping newsletter welcome email');
+    return { success: false, error: 'Email service not configured' };
+  }
+
+  try {
+    const greeting = data.firstName ? `Merhaba ${data.firstName}` : 'Merhaba';
+    
+    await resend.emails.send({
+      from: 'noreply@freepalestine.com',
+      to: data.email,
+      subject: 'Free Palestine Newsletter\'a Hoş Geldiniz!',
+      html: `
+        <h2>${greeting},</h2>
+        <p>Free Palestine newsletter\'a abone olduğunuz için teşekkür ederiz!</p>
+        
+        <p>Bundan böyle sizlere düzenli olarak şunları göndereceğiz:</p>
+        <ul>
+          <li>Filistin'deki son gelişmeler</li>
+          <li>Boykot kampanyaları ve haberler</li>
+          <li>Dayanışma etkinlikleri</li>
+          <li>Yardım fırsatları</li>
+        </ul>
+        
+        <p>Filistin davasına verdiğiniz destek için teşekkür ederiz.</p>
+        
+        <p><strong>Özgür Filistin!</strong></p>
+        
+        <br>
+        <p>Saygılarımızla,<br>Free Palestine Ekibi</p>
+        
+        <hr>
+        <p style="font-size: 12px; color: #666;">
+          Bu e-postayı almak istemiyorsanız, newsletter aboneliğinizi iptal edebilirsiniz.
+        </p>
+      `,
+    });
+
+    return { success: true };
+  } catch (error) {
+    console.error('Failed to send newsletter welcome email:', error);
+    return { success: false, error: 'Failed to send welcome email' };
+  }
+}

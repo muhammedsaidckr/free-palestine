@@ -1,8 +1,6 @@
 import { NextResponse } from 'next/server';
-
-// In-memory storage for demo purposes
-// In a real application, you'd use a database
-const subscribers = new Set<string>();
+import { saveNewsletterSubscription, getNewsletterSubscription, getNewsletterSubscriberCount } from '@/lib/database';
+import { sendNewsletterWelcome } from '@/lib/emailService';
 
 export async function POST(request: Request) {
   try {
@@ -27,35 +25,38 @@ export async function POST(request: Request) {
     }
 
     // Check if already subscribed
-    if (subscribers.has(email.toLowerCase())) {
+    const existingSubscription = await getNewsletterSubscription(email);
+    if (existingSubscription) {
       return NextResponse.json(
         { error: 'This email address is already subscribed' },
         { status: 409 }
       );
     }
 
-    // Add to subscribers
-    subscribers.add(email.toLowerCase());
-
-    // Here you would typically:
-    // 1. Save to database with subscriber details
-    // 2. Add to email marketing service (Mailchimp, ConvertKit, etc.)
-    // 3. Send welcome email
-    // 4. Queue for processing, etc.
-    
-    // For now, we'll just log the subscription and return success
-    console.log('Newsletter subscription:', {
-      email,
-      firstName: firstName || null,
-      interests: interests || [],
-      timestamp: new Date().toISOString()
+    // Save to database
+    const subscription = await saveNewsletterSubscription({
+      email: email.toLowerCase(),
+      first_name: firstName || null,
+      interests: interests || []
     });
 
-    // In a real application, you might want to:
-    // - Save to a database (PostgreSQL, MongoDB, etc.)
-    // - Integrate with email marketing service
-    // - Send a welcome email
-    // - Add to analytics/tracking
+    // Send welcome email
+    const emailResult = await sendNewsletterWelcome({
+      email: subscription.email,
+      firstName: subscription.first_name
+    });
+
+    if (!emailResult.success) {
+      console.warn('Failed to send welcome email:', emailResult.error);
+    }
+
+    console.log('Newsletter subscription saved:', {
+      id: subscription.id,
+      email: subscription.email,
+      firstName: subscription.first_name,
+      interests: subscription.interests,
+      timestamp: subscription.created_at
+    });
     
     return NextResponse.json({
       success: true,
@@ -72,8 +73,17 @@ export async function POST(request: Request) {
 }
 
 export async function GET() {
-  // Return subscriber count for admin purposes
-  return NextResponse.json({
-    subscriberCount: subscribers.size
-  });
+  try {
+    // Return subscriber count for admin purposes
+    const count = await getNewsletterSubscriberCount();
+    return NextResponse.json({
+      subscriberCount: count
+    });
+  } catch (error) {
+    console.error('Failed to get subscriber count:', error);
+    return NextResponse.json(
+      { error: 'Failed to get subscriber count' },
+      { status: 500 }
+    );
+  }
 }
