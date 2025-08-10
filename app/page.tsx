@@ -6,6 +6,8 @@ import { useI18n } from "@/components/I18nProvider";
 import { Timeline } from "@/components/Timeline";
 import { newsService, NewsItem } from "@/lib/newsService";
 import PetitionForm from "@/components/PetitionForm";
+import ContactForm from "@/components/ContactForm";
+import NewsletterForm from "@/components/NewsletterForm";
 
 export default function Home() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -514,6 +516,38 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Newsletter Section */}
+      <section className="py-20 bg-[#CE1126]">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-white mb-4">{t('newsletter.title')}</h2>
+            <p className="text-lg text-red-100 max-w-2xl mx-auto">
+              {t('newsletter.description')}
+            </p>
+          </div>
+          
+          <div className="bg-white rounded-lg shadow-lg p-8">
+            <NewsletterForm />
+          </div>
+        </div>
+      </section>
+
+      {/* Contact Section */}
+      <section className="py-20 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold text-gray-900 mb-4">{t('contact.title')}</h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              {t('contact.description')}
+            </p>
+          </div>
+          
+          <div className="bg-gray-50 rounded-lg shadow-lg p-8">
+            <ContactForm />
+          </div>
+        </div>
+      </section>
+
       {/* Footer */}
       <footer id="iletisim" className="bg-gray-900 text-white py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -551,11 +585,15 @@ export default function Home() {
             </div>
             <div>
               <h3 className="font-bold mb-4">{t('footer.contact')}</h3>
-              <ul className="space-y-2 text-gray-400">
+              <ul className="space-y-2 text-gray-400 mb-4">
                 <li>info@ozgurfilistin.tr</li>
                 <li>@OzgurFilistin</li>
                 <li>Türkiye</li>
               </ul>
+              <div className="mt-4">
+                <h4 className="font-medium text-white mb-2">{t('newsletter.title')}</h4>
+                <NewsletterForm inline className="max-w-sm" />
+              </div>
             </div>
           </div>
           <div className="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">

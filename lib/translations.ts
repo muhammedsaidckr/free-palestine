@@ -173,6 +173,76 @@ export const translations: Translations = {
       }
     },
 
+    // Contact Section
+    contact: {
+      title: 'Bizimle İletişime Geç',
+      description: 'Soruların, önerilerin veya katkı yapmak istediğin konular için bize ulaş',
+      form: {
+        name: 'Ad Soyad',
+        namePlaceholder: 'Adınız ve soyadınız',
+        email: 'E-posta',
+        emailPlaceholder: 'ornek@email.com',
+        subject: 'Konu',
+        subjectPlaceholder: 'Mesajınızın konusu',
+        message: 'Mesaj',
+        messagePlaceholder: 'Mesajınızı buraya yazın...',
+        submitButton: 'Mesajı Gönder',
+        submitting: 'Gönderiliyor...',
+        privacy: 'İletişim bilgileriniz güvenli tutulacak ve sadece size yanıt vermek için kullanılacaktır.'
+      },
+      success: {
+        title: 'Teşekkürler!',
+        message: 'Mesajınız başarıyla iletildi. En kısa sürede size geri döneceğiz.',
+        sendAnother: 'Başka mesaj gönder'
+      },
+      errors: {
+        nameRequired: 'Ad soyad gerekli',
+        emailRequired: 'E-posta adresi gerekli',
+        subjectRequired: 'Konu gerekli',
+        messageRequired: 'Mesaj gerekli',
+        nameTooShort: 'Ad soyad en az 2 karakter olmalı',
+        subjectTooShort: 'Konu en az 5 karakter olmalı',
+        messageTooShort: 'Mesaj en az 10 karakter olmalı',
+        invalidEmail: 'Geçerli bir e-posta adresi girin',
+        submitFailed: 'Mesaj gönderilemedi, lütfen tekrar deneyin',
+        networkError: 'Bağlantı hatası, lütfen tekrar deneyin'
+      }
+    },
+
+    // Newsletter Section
+    newsletter: {
+      title: 'Bülten Aboneliği',
+      description: 'Filistin ile ilgili gelişmelerden haberdar olmak için bültenimize abone ol',
+      form: {
+        email: 'E-posta',
+        emailPlaceholder: 'ornek@email.com',
+        firstName: 'Ad',
+        firstNamePlaceholder: 'Adınız',
+        interests: 'İlgi Alanlarınız',
+        optional: '(isteğe bağlı)',
+        submitButton: 'Bültene Abone Ol',
+        submitting: 'Abone oluyor...'
+      },
+      interests: {
+        news: 'Haberler ve gelişmeler',
+        actions: 'Eylem çağrıları',
+        events: 'Etkinlik duyuruları',
+        updates: 'Platform güncellemeleri'
+      },
+      success: {
+        title: 'Hoş geldiniz!',
+        message: 'Bülten aboneliğiniz başarıyla tamamlandı. İlk bültenimizi yakında alacaksınız.',
+        subscribeAnother: 'Başkası için abone ol'
+      },
+      errors: {
+        emailRequired: 'E-posta adresi gerekli',
+        invalidEmail: 'Geçerli bir e-posta adresi girin',
+        alreadySubscribed: 'Bu e-posta adresi zaten abone',
+        submitFailed: 'Abonelik başarısız oldu, lütfen tekrar deneyin',
+        networkError: 'Bağlantı hatası, lütfen tekrar deneyin'
+      }
+    },
+
     // Alerts and Messages
     messages: {
       linkCopied: 'Link kopyalandı!',
@@ -352,6 +422,76 @@ export const translations: Translations = {
         lastNameTooShort: 'Last name must be at least 2 characters',
         alreadySigned: 'This email address has already signed',
         submitFailed: 'Signing failed, please try again',
+        networkError: 'Connection error, please try again'
+      }
+    },
+    
+    // Contact Section
+    contact: {
+      title: 'Get in Touch with Us',
+      description: 'Reach out to us with your questions, suggestions, or topics you want to contribute to',
+      form: {
+        name: 'Full Name',
+        namePlaceholder: 'Your full name',
+        email: 'Email',
+        emailPlaceholder: 'example@email.com',
+        subject: 'Subject',
+        subjectPlaceholder: 'Subject of your message',
+        message: 'Message',
+        messagePlaceholder: 'Write your message here...',
+        submitButton: 'Send Message',
+        submitting: 'Sending...',
+        privacy: 'Your contact information will be kept secure and used only to respond to you.'
+      },
+      success: {
+        title: 'Thank you!',
+        message: 'Your message has been successfully sent. We will get back to you as soon as possible.',
+        sendAnother: 'Send another message'
+      },
+      errors: {
+        nameRequired: 'Full name is required',
+        emailRequired: 'Email address is required',
+        subjectRequired: 'Subject is required',
+        messageRequired: 'Message is required',
+        nameTooShort: 'Full name must be at least 2 characters',
+        subjectTooShort: 'Subject must be at least 5 characters',
+        messageTooShort: 'Message must be at least 10 characters',
+        invalidEmail: 'Please enter a valid email address',
+        submitFailed: 'Message could not be sent, please try again',
+        networkError: 'Connection error, please try again'
+      }
+    },
+
+    // Newsletter Section
+    newsletter: {
+      title: 'Newsletter Subscription',
+      description: 'Subscribe to our newsletter to stay updated on Palestine-related developments',
+      form: {
+        email: 'Email',
+        emailPlaceholder: 'example@email.com',
+        firstName: 'First Name',
+        firstNamePlaceholder: 'Your first name',
+        interests: 'Your Interests',
+        optional: '(optional)',
+        submitButton: 'Subscribe to Newsletter',
+        submitting: 'Subscribing...'
+      },
+      interests: {
+        news: 'News and developments',
+        actions: 'Action calls',
+        events: 'Event announcements',
+        updates: 'Platform updates'
+      },
+      success: {
+        title: 'Welcome!',
+        message: 'Your newsletter subscription has been successfully completed. You will receive our first newsletter soon.',
+        subscribeAnother: 'Subscribe for someone else'
+      },
+      errors: {
+        emailRequired: 'Email address is required',
+        invalidEmail: 'Please enter a valid email address',
+        alreadySubscribed: 'This email address is already subscribed',
+        submitFailed: 'Subscription failed, please try again',
         networkError: 'Connection error, please try again'
       }
     },
