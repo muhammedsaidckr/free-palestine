@@ -1,12 +1,15 @@
 'use client';
 
 import Image from "next/image";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useI18n } from "@/components/I18nProvider";
 import { Timeline } from "@/components/Timeline";
+import { newsService, NewsItem } from "@/lib/newsService";
 
 export default function Home() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
+  const [newsLoading, setNewsLoading] = useState(true);
   const { language, setLanguage, t } = useI18n();
 
   const toggleMobileMenu = () => {
@@ -55,6 +58,45 @@ export default function Home() {
 
   const handleBoycottList = () => {
     alert(t('messages.boycottSoon'));
+  };
+
+  useEffect(() => {
+    const fetchHomePageNews = async () => {
+      try {
+        setNewsLoading(true);
+        const news = await newsService.getAllNews();
+        // Get first 6 items for homepage
+        setNewsItems(news.slice(0, 6));
+      } catch (error) {
+        console.error('Error fetching homepage news:', error);
+      } finally {
+        setNewsLoading(false);
+      }
+    };
+
+    fetchHomePageNews();
+  }, []);
+
+  const getCategoryBadgeColor = (category: string) => {
+    switch (category) {
+      case 'palestine': return 'text-red-600';
+      case 'international': return 'text-blue-600';
+      case 'turkey': return 'text-orange-600';
+      case 'solidarity': return 'text-green-600';
+      case 'humanrights': return 'text-purple-600';
+      default: return 'text-gray-600';
+    }
+  };
+
+  const getCategoryLabel = (category: string) => {
+    switch (category) {
+      case 'palestine': return 'Filistin';
+      case 'international': return 'Uluslararası';
+      case 'turkey': return 'Türkiye';
+      case 'solidarity': return 'Dayanışma';
+      case 'humanrights': return 'İnsan Hakları';
+      default: return 'Genel';
+    }
   };
   return (
     <div className="min-h-screen bg-white">
@@ -399,55 +441,50 @@ export default function Home() {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            <div className="bg-white rounded-lg shadow-md overflow-hidden">
-              <div className="p-6">
-                <div className="text-sm text-red-600 font-medium mb-2">{t('news.hunger.category')}</div>
-                <h3 className="font-bold text-gray-900 mb-2">{t('news.hunger.title')}</h3>
-                <p className="text-gray-600 text-sm">{t('news.hunger.content')}</p>
-                <div className="text-xs text-gray-400 mt-2">{t('news.hunger.source')}</div>
-              </div>
+          {newsLoading ? (
+            <div className="text-center py-8">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#CE1126] mx-auto mb-4"></div>
+              <p className="text-gray-600">Haberler yükleniyor...</p>
             </div>
-            <div className="bg-white rounded-lg shadow-md overflow-hidden">
-              <div className="p-6">
-                <div className="text-sm text-blue-600 font-medium mb-2">{t('news.solidarity.category')}</div>
-                <h3 className="font-bold text-gray-900 mb-2">{t('news.solidarity.title')}</h3>
-                <p className="text-gray-600 text-sm">{t('news.solidarity.content')}</p>
-                <div className="text-xs text-gray-400 mt-2">{t('news.solidarity.source')}</div>
-              </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+              {newsItems.map((news) => (
+                <div key={news.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+                  <div className="p-6">
+                    <div className={`text-sm font-medium mb-2 ${getCategoryBadgeColor(news.category)}`}>
+                      {getCategoryLabel(news.category)}
+                    </div>
+                    <h3 className="font-bold text-gray-900 mb-2 line-clamp-2">{news.title}</h3>
+                    <p className="text-gray-600 text-sm mb-3 line-clamp-3">{news.summary}</p>
+                    <div className="flex items-center justify-between text-xs text-gray-400">
+                      <span>{news.source}</span>
+                      <span>{news.timeAgo}</span>
+                    </div>
+                    {news.url && (
+                      <div className="mt-3">
+                        <a 
+                          href={news.url} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-[#CE1126] text-sm font-medium hover:text-[#B00E20] transition-colors"
+                        >
+                          Devamını oku →
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ))}
             </div>
-            <div className="bg-white rounded-lg shadow-md overflow-hidden">
-              <div className="p-6">
-                <div className="text-sm text-green-600 font-medium mb-2">{t('news.aid.category')}</div>
-                <h3 className="font-bold text-gray-900 mb-2">{t('news.aid.title')}</h3>
-                <p className="text-gray-600 text-sm">{t('news.aid.content')}</p>
-                <div className="text-xs text-gray-400 mt-2">{t('news.aid.source')}</div>
-              </div>
-            </div>
-            <div className="bg-white rounded-lg shadow-md overflow-hidden">
-              <div className="p-6">
-                <div className="text-sm text-purple-600 font-medium mb-2">{t('news.malnutrition.category')}</div>
-                <h3 className="font-bold text-gray-900 mb-2">{t('news.malnutrition.title')}</h3>
-                <p className="text-gray-600 text-sm">{t('news.malnutrition.content')}</p>
-                <div className="text-xs text-gray-400 mt-2">{t('news.malnutrition.source')}</div>
-              </div>
-            </div>
-            <div className="bg-white rounded-lg shadow-md overflow-hidden">
-              <div className="p-6">
-                <div className="text-sm text-orange-600 font-medium mb-2">{t('news.diplomacy.category')}</div>
-                <h3 className="font-bold text-gray-900 mb-2">{t('news.diplomacy.title')}</h3>
-                <p className="text-gray-600 text-sm">{t('news.diplomacy.content')}</p>
-                <div className="text-xs text-gray-400 mt-2">{t('news.diplomacy.source')}</div>
-              </div>
-            </div>
-            <div className="bg-white rounded-lg shadow-md overflow-hidden">
-              <div className="p-6">
-                <div className="text-sm text-red-600 font-medium mb-2">{t('news.attacks.category')}</div>
-                <h3 className="font-bold text-gray-900 mb-2">{t('news.attacks.title')}</h3>
-                <p className="text-gray-600 text-sm">{t('news.attacks.content')}</p>
-                <div className="text-xs text-gray-400 mt-2">{t('news.attacks.source')}</div>
-              </div>
-            </div>
+          )}
+          
+          <div className="text-center mt-12">
+            <a 
+              href="/haberler"
+              className="bg-[#CE1126] text-white px-8 py-3 rounded-lg font-semibold hover:bg-[#B00E20] transition-colors inline-block"
+            >
+              Tüm Haberleri Gör
+            </a>
           </div>
         </div>
       </section>

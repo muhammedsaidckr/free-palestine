@@ -2,73 +2,40 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { newsService, NewsItem } from "@/lib/newsService";
 
 export default function NewsPage() {
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const newsItems = [
-    {
-      id: 1,
-      title: "BM'den Gazze'ye acil insani yardım çağrısı",
-      summary: "Birleşmiş Milletler, Gazze'deki kötüleşen insani duruma dikkat çekerek uluslararası toplumdan acil yardım çağrısında bulundu.",
-      category: "international",
-      date: "2025-08-09",
-      timeAgo: "2 saat önce",
-      content: "Birleşmiş Milletler İnsani İşler Koordinasyon Ofisi (OCHA), Gazze'deki sivil halkın durumunun her geçen gün daha da kötüleştiğini açıkladı. 2.3 milyon nüfuslu bölgede temel ihtiyaçların karşılanması konusunda ciddi sıkıntılar yaşandığı belirtildi."
-    },
-    {
-      id: 2,
-      title: "Türkiye'den Filistin'e kapsamlı destek paketi",
-      summary: "Türk hükümeti ve sivil toplum kuruluşları, Filistin halkına yönelik yeni bir destek paketi açıkladı.",
-      category: "turkey",
-      date: "2025-08-09",
-      timeAgo: "4 saat önce",
-      content: "Türkiye Diyanet Vakfı ve TİKA koordinasyonunda hazırlanan paket kapsamında tıbbi malzeme, gıda yardımı ve eğitim desteği sağlanacak."
-    },
-    {
-      id: 3,
-      title: "Dünya genelinde Filistin dayanışma gösterileri",
-      summary: "50'den fazla ülkede eş zamanlı olarak düzenlenen gösterilerle Filistin halkına destek verildi.",
-      category: "solidarity",
-      date: "2025-08-08",
-      timeAgo: "1 gün önce",
-      content: "Londra, Paris, Berlin, New York ve İstanbul başta olmak üzere dünya çapında milyonlarca kişi Filistin halkı için sokağa çıktı."
-    },
-    {
-      id: 4,
-      title: "Uluslararası Adalet Divanı'ndan kritik açıklama",
-      summary: "UCM, bölgedeki durumla ilgili inceleme sürecinin devam ettiğini açıkladı.",
-      category: "international",
-      date: "2025-08-08",
-      timeAgo: "1 gün önce",
-      content: "Lahey'deki Uluslararası Ceza Mahkemesi, bölgedeki olaylarla ilgili delilleri incelemeye devam ettiğini belirtti."
-    },
-    {
-      id: 5,
-      title: "Türk sanatçılardan Filistin'e destek konseri",
-      summary: "Ünlü Türk sanatçılar, Filistin için özel bir konser düzenleyerek gelirini bağışlayacak.",
-      category: "turkey",
-      date: "2025-08-07",
-      timeAgo: "2 gün önce",
-      content: "Sezen Aksu, Tarkan ve Ajda Pekkan'ın da aralarında bulunduğu sanatçılar, 15 Ağustos'ta İstanbul'da özel bir konser verecek."
-    },
-    {
-      id: 6,
-      title: "Gazze'de yeniden inşa çalışmaları için uluslararası fon",
-      summary: "AB ve İslam İşbirliği Teşkilatı, Gazze'nin yeniden inşası için ortak fon oluşturdu.",
-      category: "international",
-      date: "2025-08-07",
-      timeAgo: "2 gün önce",
-      content: "500 milyon dolarlık fon, altyapı ve konut projelerine odaklanacak."
-    }
-  ];
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const news = await newsService.getAllNews();
+        setNewsItems(news);
+      } catch (err) {
+        setError('Haberler yüklenirken bir hata oluştu. Lütfen daha sonra tekrar deneyin.');
+        console.error('Error fetching news:', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchNews();
+  }, []);
 
   const categories = [
     { key: 'all', label: 'Tümü', count: newsItems.length },
+    { key: 'palestine', label: 'Filistin', count: newsItems.filter(item => item.category === 'palestine').length },
     { key: 'international', label: 'Uluslararası', count: newsItems.filter(item => item.category === 'international').length },
     { key: 'turkey', label: 'Türkiye', count: newsItems.filter(item => item.category === 'turkey').length },
-    { key: 'solidarity', label: 'Dayanışma', count: newsItems.filter(item => item.category === 'solidarity').length }
+    { key: 'solidarity', label: 'Dayanışma', count: newsItems.filter(item => item.category === 'solidarity').length },
+    { key: 'humanrights', label: 'İnsan Hakları', count: newsItems.filter(item => item.category === 'humanrights').length }
   ];
 
   const filteredNews = selectedCategory === 'all' 
@@ -77,18 +44,22 @@ export default function NewsPage() {
 
   const getCategoryBadgeColor = (category: string) => {
     switch (category) {
+      case 'palestine': return 'bg-red-100 text-red-800';
       case 'international': return 'bg-blue-100 text-blue-800';
-      case 'turkey': return 'bg-red-100 text-red-800';
+      case 'turkey': return 'bg-orange-100 text-orange-800';
       case 'solidarity': return 'bg-green-100 text-green-800';
+      case 'humanrights': return 'bg-purple-100 text-purple-800';
       default: return 'bg-gray-100 text-gray-800';
     }
   };
 
   const getCategoryLabel = (category: string) => {
     switch (category) {
+      case 'palestine': return 'Filistin';
       case 'international': return 'Uluslararası';
       case 'turkey': return 'Türkiye';
       case 'solidarity': return 'Dayanışma';
+      case 'humanrights': return 'İnsan Hakları';
       default: return 'Genel';
     }
   };
@@ -161,16 +132,20 @@ export default function NewsPage() {
                   <h4 className="font-semibold text-gray-900 mb-3">Hızlı İstatistikler</h4>
                   <div className="space-y-2 text-sm text-gray-600">
                     <div className="flex justify-between">
-                      <span>Bugünkü haberler:</span>
-                      <span className="font-medium">3</span>
+                      <span>Filistin haberleri:</span>
+                      <span className="font-medium">{newsItems.filter(item => item.category === 'palestine').length}</span>
                     </div>
                     <div className="flex justify-between">
-                      <span>Bu hafta:</span>
-                      <span className="font-medium">12</span>
+                      <span>Uluslararası:</span>
+                      <span className="font-medium">{newsItems.filter(item => item.category === 'international').length}</span>
                     </div>
                     <div className="flex justify-between">
                       <span>Toplam haber:</span>
                       <span className="font-medium">{newsItems.length}</span>
+                    </div>
+                    <div className="flex justify-between">
+                      <span>Kaynak sayısı:</span>
+                      <span className="font-medium">{new Set(newsItems.map(item => item.source)).size}</span>
                     </div>
                   </div>
                 </div>
@@ -179,20 +154,58 @@ export default function NewsPage() {
 
             {/* Main Content */}
             <div className="lg:w-3/4">
-              {/* Breaking News Banner */}
-              <div className="bg-red-50 border-l-4 border-[#CE1126] p-4 mb-8">
-                <div className="flex items-center">
-                  <span className="bg-[#CE1126] text-white text-xs font-bold px-2 py-1 rounded mr-3">SON DAKİKA</span>
-                  <p className="text-gray-800">BM&apos;den Gazze&apos;ye acil insani yardım çağrısı</p>
+              {/* Loading State */}
+              {loading && (
+                <div className="text-center py-8">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#CE1126] mx-auto mb-4"></div>
+                  <p className="text-gray-600">Haberler yükleniyor...</p>
                 </div>
-              </div>
+              )}
+
+              {/* Error State */}
+              {error && (
+                <div className="bg-red-50 border-l-4 border-red-400 p-4 mb-8">
+                  <div className="flex">
+                    <div className="flex-shrink-0">
+                      <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                        <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                      </svg>
+                    </div>
+                    <div className="ml-3">
+                      <p className="text-red-700">{error}</p>
+                      <button 
+                        onClick={() => window.location.reload()}
+                        className="mt-2 text-red-600 hover:text-red-800 underline"
+                      >
+                        Yeniden dene
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Breaking News Banner */}
+              {!loading && !error && filteredNews.length > 0 && (
+                <div className="bg-red-50 border-l-4 border-[#CE1126] p-4 mb-8">
+                  <div className="flex items-center">
+                    <span className="bg-[#CE1126] text-white text-xs font-bold px-2 py-1 rounded mr-3">SON DAKİKA</span>
+                    <p className="text-gray-800">{filteredNews[0]?.title}</p>
+                  </div>
+                </div>
+              )}
 
               {/* News Grid */}
-              <div className="space-y-6">
-                {filteredNews.map((news, index) => (
-                  <article key={news.id} className={`bg-white rounded-lg shadow-md overflow-hidden border-l-4 ${
-                    index === 0 ? 'border-[#CE1126]' : 'border-gray-200'
-                  } hover:shadow-lg transition-shadow`}>
+              {!loading && !error && (
+                <div className="space-y-6">
+                  {filteredNews.length === 0 ? (
+                    <div className="text-center py-8">
+                      <p className="text-gray-600">Bu kategoride henüz haber bulunmuyor.</p>
+                    </div>
+                  ) : (
+                    filteredNews.map((news, index) => (
+                      <article key={news.id} className={`bg-white rounded-lg shadow-md overflow-hidden border-l-4 ${
+                        index === 0 ? 'border-[#CE1126]' : 'border-gray-200'
+                      } hover:shadow-lg transition-shadow`}>
                     <div className="p-6">
                       <div className="flex items-start justify-between mb-3">
                         <div className="flex items-center space-x-3">
@@ -200,6 +213,8 @@ export default function NewsPage() {
                             {getCategoryLabel(news.category)}
                           </span>
                           <time className="text-sm text-gray-500">{news.timeAgo}</time>
+                          <span className="text-xs text-gray-400">•</span>
+                          <span className="text-xs text-gray-500">{news.source}</span>
                         </div>
                         <button className="text-gray-400 hover:text-gray-600">
                           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -217,9 +232,18 @@ export default function NewsPage() {
                       </p>
                       
                       <div className="flex items-center justify-between">
-                        <button className="text-[#CE1126] font-medium hover:text-[#B00E20] transition-colors">
-                          Devamını oku →
-                        </button>
+                        {news.url ? (
+                          <a 
+                            href={news.url} 
+                            target="_blank" 
+                            rel="noopener noreferrer"
+                            className="text-[#CE1126] font-medium hover:text-[#B00E20] transition-colors"
+                          >
+                            Kaynağa git →
+                          </a>
+                        ) : (
+                          <span className="text-gray-400">Kaynak mevcut değil</span>
+                        )}
                         <div className="flex space-x-4 text-sm text-gray-500">
                           <button className="hover:text-[#CE1126] flex items-center space-x-1">
                             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -237,15 +261,22 @@ export default function NewsPage() {
                       </div>
                     </div>
                   </article>
-                ))}
-              </div>
+                    ))
+                  )}
+                </div>
+              )}
 
               {/* Load More Button */}
-              <div className="text-center mt-8">
-                <button className="bg-gray-100 text-gray-800 px-6 py-3 rounded-lg hover:bg-gray-200 transition-colors font-medium">
-                  Daha Fazla Haber Yükle
-                </button>
-              </div>
+              {!loading && !error && filteredNews.length > 0 && (
+                <div className="text-center mt-8">
+                  <button 
+                    onClick={() => window.location.reload()}
+                    className="bg-gray-100 text-gray-800 px-6 py-3 rounded-lg hover:bg-gray-200 transition-colors font-medium"
+                  >
+                    Haberleri Yenile
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </div>
