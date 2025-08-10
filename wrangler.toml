@@ -11,13 +11,27 @@ binding = "ASSETS"
 [vars]
 NODE_ENV = "production"
 
+[observability.logs]
+enabled = true
+
 # R2 bucket binding for Next.js incremental cache
 [[r2_buckets]]
 binding = "NEXT_INC_CACHE_R2_BUCKET"
 bucket_name = "free-palestine-cache"
 
 # Environment variables will be set through Cloudflare dashboard or wrangler secrets
-# NEXT_PUBLIC_SUPABASE_URL
-# NEXT_PUBLIC_SUPABASE_ANON_KEY
-# RESEND_API_KEY
-# ADMIN_EMAIL
+# Required for email service:
+# RESEND_API_KEY - API key from Resend (use wrangler secret put RESEND_API_KEY)
+# FROM_EMAIL - Email address to send from (e.g., "noreply@yourdomain.com")
+# ADMIN_EMAIL - Admin email to receive contact form notifications
+#
+# Required for Supabase:
+# NEXT_PUBLIC_SUPABASE_URL - Supabase project URL
+# NEXT_PUBLIC_SUPABASE_ANON_KEY - Supabase anonymous key
+#
+# Example commands to set secrets:
+# wrangler secret put RESEND_API_KEY
+# wrangler secret put FROM_EMAIL
+# wrangler secret put ADMIN_EMAIL
+# wrangler secret put NEXT_PUBLIC_SUPABASE_URL
+# wrangler secret put NEXT_PUBLIC_SUPABASE_ANON_KEY
