@@ -1,66 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'fs';
-import { join } from 'path';
-
-interface PetitionSignature {
-  id: string;
-  email: string;
-  firstName: string;
-  lastName: string;
-  city?: string;
-  timestamp: string;
-  ipAddress: string;
-}
-
-interface PetitionData {
-  signatures: PetitionSignature[];
-  totalCount: number;
-  lastUpdated: string;
-}
-
-const PETITION_FILE = join(process.cwd(), 'data', 'petition.json');
-
-function ensureDataDirectory() {
-  const dataDir = join(process.cwd(), 'data');
-  if (!existsSync(dataDir)) {
-    mkdirSync(dataDir, { recursive: true });
-  }
-}
-
-function loadPetitionData(): PetitionData {
-  ensureDataDirectory();
-  
-  if (!existsSync(PETITION_FILE)) {
-    const initialData: PetitionData = {
-      signatures: [],
-      totalCount: 2847, // Starting with the current count from the UI
-      lastUpdated: new Date().toISOString()
-    };
-    writeFileSync(PETITION_FILE, JSON.stringify(initialData, null, 2));
-    return initialData;
-  }
-  
-  try {
-    const data = readFileSync(PETITION_FILE, 'utf-8');
-    return JSON.parse(data);
-  } catch (error) {
-    console.error('Error loading petition data:', error);
-    return {
-      signatures: [],
-      totalCount: 2847,
-      lastUpdated: new Date().toISOString()
-    };
-  }
-}
-
-function savePetitionData(data: PetitionData) {
-  try {
-    writeFileSync(PETITION_FILE, JSON.stringify(data, null, 2));
-  } catch (error) {
-    console.error('Error saving petition data:', error);
-    throw new Error('Failed to save petition data');
-  }
-}
+import { 
+  savePetitionSignature, 
+  getPetitionSignature, 
+  getPetitionSignatureCount 
+} from '@/lib/database';
 
 function getClientIP(request: NextRequest): string {
   const xForwardedFor = request.headers.get('x-forwarded-for');
@@ -77,9 +20,6 @@ function getClientIP(request: NextRequest): string {
   return 'unknown';
 }
 
-function generateId(): string {
-  return Date.now().toString(36) + Math.random().toString(36).substr(2);
-}
 
 function isValidEmail(email: string): boolean {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -92,10 +32,10 @@ function sanitizeInput(input: string): string {
 
 export async function GET() {
   try {
-    const data = loadPetitionData();
+    const totalCount = await getPetitionSignatureCount();
     return NextResponse.json({
-      totalCount: data.totalCount,
-      lastUpdated: data.lastUpdated
+      totalCount,
+      lastUpdated: new Date().toISOString()
     });
   } catch (error) {
     console.error('Error fetching petition data:', error);
@@ -133,13 +73,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const data = loadPetitionData();
-
     // Check if email already exists
-    const existingSignature = data.signatures.find(sig => 
-      sig.email.toLowerCase() === email.toLowerCase()
-    );
-
+    const existingSignature = await getPetitionSignature(email);
     if (existingSignature) {
       return NextResponse.json(
         { error: 'This email has already signed the petition' },
@@ -148,32 +83,36 @@ export async function POST(request: NextRequest) {
     }
 
     // Create new signature
-    const newSignature: PetitionSignature = {
-      id: generateId(),
+    const newSignature = {
       email: sanitizeInput(email.toLowerCase()),
-      firstName: sanitizeInput(firstName),
-      lastName: sanitizeInput(lastName),
+      first_name: sanitizeInput(firstName),
+      last_name: sanitizeInput(lastName),
       city: city ? sanitizeInput(city) : undefined,
-      timestamp: new Date().toISOString(),
-      ipAddress: getClientIP(request)
+      ip_address: getClientIP(request)
     };
 
-    // Add signature and update count
-    data.signatures.push(newSignature);
-    data.totalCount = data.signatures.length + 2847; // Base count + new signatures
-    data.lastUpdated = new Date().toISOString();
+    // Save to database
+    await savePetitionSignature(newSignature);
 
-    // Save to file
-    savePetitionData(data);
+    // Get updated count
+    const totalCount = await getPetitionSignatureCount();
 
     return NextResponse.json({
       success: true,
-      totalCount: data.totalCount,
+      totalCount,
       message: 'Petition signed successfully'
     }, { status: 201 });
 
   } catch (error) {
     console.error('Error processing petition signature:', error);
+    
+    if (error instanceof Error && error.message.includes('already signed')) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: 409 }
+      );
+    }
+    
     return NextResponse.json(
       { error: 'Failed to process petition signature' },
       { status: 500 }

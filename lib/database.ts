@@ -109,3 +109,68 @@ export async function getNewsletterSubscriberCount() {
 
   return count || 0;
 }
+
+export interface PetitionSignature {
+  id?: number;
+  email: string;
+  first_name: string;
+  last_name: string;
+  city?: string;
+  ip_address?: string;
+  created_at?: string;
+}
+
+export async function savePetitionSignature(signature: Omit<PetitionSignature, 'id' | 'created_at'>) {
+  const { data, error } = await supabase
+    .from('petition_signatures')
+    .insert([signature])
+    .select();
+
+  if (error) {
+    if (error.code === '23505') {
+      throw new Error('This email has already signed the petition');
+    }
+    throw new Error(`Failed to save petition signature: ${error.message}`);
+  }
+
+  return data[0];
+}
+
+export async function getPetitionSignature(email: string) {
+  const { data, error } = await supabase
+    .from('petition_signatures')
+    .select('*')
+    .eq('email', email.toLowerCase())
+    .single();
+
+  if (error && error.code !== 'PGRST116') {
+    throw new Error(`Failed to fetch petition signature: ${error.message}`);
+  }
+
+  return data;
+}
+
+export async function getPetitionSignatureCount() {
+  const { count, error } = await supabase
+    .from('petition_signatures')
+    .select('*', { count: 'exact', head: true });
+
+  if (error) {
+    throw new Error(`Failed to fetch petition signature count: ${error.message}`);
+  }
+
+  return (count || 0) + 2847; // Base count from original implementation
+}
+
+export async function getPetitionSignatures() {
+  const { data, error } = await supabase
+    .from('petition_signatures')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    throw new Error(`Failed to fetch petition signatures: ${error.message}`);
+  }
+
+  return data;
+}
