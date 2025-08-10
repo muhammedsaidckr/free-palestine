@@ -1,0 +1,55 @@
+{
+  "name": "Özgür Filistin - Free Palestine Türkiye",
+  "short_name": "Özgür Filistin",
+  "description": "Türkiye'den Filistin'e destek. Filistin için birlikte duralım.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#CE1126",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "tr",
+  "dir": "ltr",
+  "categories": ["social", "news", "education"],
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "16x16",
+      "type": "image/x-icon"
+    },
+    {
+      "src": "/logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Haberler",
+      "short_name": "Haberler",
+      "description": "En son Filistin haberlerini görüntüle",
+      "url": "/haberler",
+      "icons": [
+        {
+          "src": "/logo.svg",
+          "sizes": "96x96",
+          "type": "image/svg+xml"
+        }
+      ]
+    },
+    {
+      "name": "Boykot",
+      "short_name": "Boykot",
+      "description": "Boykot listesini görüntüle",
+      "url": "/boykot",
+      "icons": [
+        {
+          "src": "/logo.svg",
+          "sizes": "96x96",
+          "type": "image/svg+xml"
+        }
+      ]
+    }
+  ]
+}

@@ -4,15 +4,22 @@ import "./globals.css";
 import { I18nProvider } from "@/components/I18nProvider";
 import { Analytics } from "@vercel/analytics/next";
 import { StructuredData } from "@/components/StructuredData";
+import { ResourcePreloader } from "@/components/ResourcePreloader";
+import { PerformanceMonitor } from "@/components/PerformanceMonitor";
+import { ServiceWorkerRegistration } from "@/components/ServiceWorkerRegistration";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+  display: 'swap',
+  preload: true,
 });
 
 const geistMono = Geist_Mono({
   variable: "--font-geist-mono",
   subsets: ["latin"],
+  display: 'swap',
+  preload: true,
 });
 
 export const metadata: Metadata = {
@@ -76,6 +83,7 @@ export const metadata: Metadata = {
   icons: {
     icon: '/favicon.ico',
   },
+  manifest: '/manifest.json',
 };
 
 export default function RootLayout({
@@ -92,6 +100,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <ResourcePreloader 
+          images={['/hero.jpg', '/logo.svg']}
+        />
+        <PerformanceMonitor />
+        <ServiceWorkerRegistration />
         <I18nProvider>
           {children}
           <Analytics />

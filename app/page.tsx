@@ -8,6 +8,7 @@ import { newsService, NewsItem } from "@/lib/newsService";
 import PetitionForm from "@/components/PetitionForm";
 import ContactForm from "@/components/ContactForm";
 import NewsletterForm from "@/components/NewsletterForm";
+import { LazySection } from "@/components/LazySection";
 
 export default function Home() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -116,6 +117,7 @@ export default function Home() {
                   width={32}
                   height={20}
                   className="border border-gray-300"
+                  priority
                 />
                 <span className="text-xl font-bold text-gray-900">Özgür Filistin</span>
               </div>
@@ -187,6 +189,7 @@ export default function Home() {
                   width={24}
                   height={15}
                   className="border border-gray-300"
+                  loading="lazy"
                 />
                 <span className="font-bold text-gray-900">Özgür Filistin</span>
               </div>
@@ -318,6 +321,10 @@ export default function Home() {
             fill
             className="object-cover"
             priority
+            quality={85}
+            sizes="100vw"
+            placeholder="blur"
+            blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAAIAAoDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAhEAACAQMDBQAAAAAAAAAAAAABAgMABAUGIWGRkqGx0f/EABUBAQEAAAAAAAAAAAAAAAAAAAMF/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEgMRkf/aAAwDAQACEQMRAD8AltJagyeH0AthI5xdrLcNM91BF5pX2HaH9bcfaSXWGaRmknyJckliyjqTzSlT54b6bk+h0R//2Q=="
           />
           {/* Dark overlay for better text readability */}
           <div className="absolute inset-0 bg-black/50"></div>
@@ -384,18 +391,20 @@ export default function Home() {
       </section>
 
       {/* Historical Timeline */}
-      <section className="py-20 bg-white">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">{t('history.title')}</h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              {t('history.subtitle')}
-            </p>
+      <LazySection>
+        <section className="py-20 bg-white">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center mb-16">
+              <h2 className="text-3xl font-bold text-gray-900 mb-4">{t('history.title')}</h2>
+              <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                {t('history.subtitle')}
+              </p>
+            </div>
+            
+            <Timeline />
           </div>
-          
-          <Timeline />
-        </div>
-      </section>
+        </section>
+      </LazySection>
 
       {/* Action Section */}
       <section id="hareket" className="py-20 bg-[#CE1126] text-white">
@@ -443,7 +452,8 @@ export default function Home() {
       </section>
 
       {/* News Section */}
-      <section id="haberler" className="py-20 bg-gray-50">
+      <LazySection>
+        <section id="haberler" className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">{t('news.title')}</h2>
@@ -498,7 +508,8 @@ export default function Home() {
             </a>
           </div>
         </div>
-      </section>
+        </section>
+      </LazySection>
 
       {/* Petition Section */}
       <section id="petition" className="py-20 bg-gray-100">
@@ -560,6 +571,7 @@ export default function Home() {
                   width={32}
                   height={20}
                   className="border border-gray-600"
+                  loading="lazy"
                 />
                 <span className="text-xl font-bold">Özgür Filistin</span>
               </div>
