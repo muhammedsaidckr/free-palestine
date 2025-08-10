@@ -1,21 +1,15 @@
 name = "free-palestine"
 compatibility_date = "2024-12-01"
-pages_build_output_dir = ".next"
-
-[build]
-command = "npm run build"
-cwd = "."
-
-[[pages_build_env_vars]]
-name = "NODE_VERSION"
-value = "20"
-
-[[pages_build_env_vars]]  
-name = "NPM_VERSION"
-value = "10"
+pages_build_output_dir = "out"
 
 [env.production.vars]
 NODE_ENV = "production"
 
-[env.preview.vars]
+[env.preview.vars]  
 NODE_ENV = "preview"
+
+# Environment variables will be set through Cloudflare dashboard
+# NEXT_PUBLIC_SUPABASE_URL
+# NEXT_PUBLIC_SUPABASE_ANON_KEY
+# RESEND_API_KEY
+# ADMIN_EMAIL

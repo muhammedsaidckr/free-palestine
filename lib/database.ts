@@ -1,9 +1,28 @@
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+// Function to create Supabase client with environment variables
+function createSupabaseClient(env?: any) {
+  let supabaseUrl: string;
+  let supabaseKey: string;
+  
+  if (env) {
+    // Cloudflare Workers environment
+    supabaseUrl = env.NEXT_PUBLIC_SUPABASE_URL || '';
+    supabaseKey = env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+  } else if (typeof process !== 'undefined' && process.env) {
+    // Next.js environment
+    supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+    supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
+  } else {
+    supabaseUrl = '';
+    supabaseKey = '';
+  }
+  
+  return createClient(supabaseUrl, supabaseKey);
+}
 
-export const supabase = createClient(supabaseUrl, supabaseKey);
+// Default client for Next.js
+export const supabase = createSupabaseClient();
 
 export interface ContactSubmission {
   id?: number;

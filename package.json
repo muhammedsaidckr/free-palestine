@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
+    "build:cf": "next build && next export",
     "start": "next start",
     "lint": "next lint",
     "pages:build": "next build",

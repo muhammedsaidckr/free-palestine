@@ -1,5 +1,3 @@
-import { NextResponse } from 'next/server';
-
 export interface NewsItem {
   id: string;
   title: string;
@@ -31,7 +29,13 @@ function formatTimeAgo(dateString: string): string {
 }
 
 function createId(title: string, source: string): string {
-  return btoa(`${title}-${source}`).replace(/[^a-zA-Z0-9]/g, '').substring(0, 16);
+  // Use crypto.subtle for base64 encoding in Cloudflare Workers
+  const encoder = new TextEncoder();
+  const data = encoder.encode(`${title}-${source}`);
+  return Array.from(data)
+    .map(byte => byte.toString(36))
+    .join('')
+    .substring(0, 16);
 }
 
 async function fetchAlJazeeraNews(): Promise<NewsItem[]> {
@@ -48,7 +52,7 @@ async function fetchAlJazeeraNews(): Promise<NewsItem[]> {
 
     const html = await response.text();
     
-    // Extract article data using regex patterns (compatible with older JS versions)
+    // Extract article data using regex patterns
     const articlePattern = /<article[^>]*class="[^"]*gc__content[^"]*"[^>]*>([\s\S]*?)<\/article>/g;
     const titlePattern = /<h3[^>]*class="[^"]*gc__title[^"]*"[^>]*>[\s\S]*?<a[^>]*href="([^"]*)"[^>]*>([\s\S]*?)<\/a>/;
     const summaryPattern = /<p[^>]*class="[^"]*gc__excerpt[^"]*"[^>]*>([\s\S]*?)<\/p>/;
@@ -93,7 +97,7 @@ async function fetchAlJazeeraNews(): Promise<NewsItem[]> {
   }
 }
 
-// Fallback news data in case Al Jazeera is unavailable
+// Fallback news data
 const FALLBACK_NEWS: NewsItem[] = [
   {
     id: 'fallback-1',
@@ -152,7 +156,7 @@ const FALLBACK_NEWS: NewsItem[] = [
   }
 ];
 
-export async function GET() {
+export async function onRequestGet() {
   try {
     // Try to fetch from Al Jazeera
     const alJazeeraNews = await fetchAlJazeeraNews();
@@ -163,14 +167,14 @@ export async function GET() {
     // Sort by date (newest first)
     news.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
     
-    return NextResponse.json({ 
+    return Response.json({ 
       news,
       source: alJazeeraNews.length > 0 ? 'aljazeera' : 'fallback',
       timestamp: new Date().toISOString()
     });
   } catch (error) {
     console.error('Error in news API route:', error);
-    return NextResponse.json({ 
+    return Response.json({ 
       news: FALLBACK_NEWS,
       source: 'fallback',
       timestamp: new Date().toISOString()

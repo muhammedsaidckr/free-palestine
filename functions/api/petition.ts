@@ -1,82 +1,61 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { 
-  savePetitionSignature, 
-  getPetitionSignature, 
-  getPetitionSignatureCount 
-} from '@/lib/database';
+import { createSupabaseClient, savePetitionSignature, getPetitionSignature, getPetitionSignatureCount } from '../_lib/database';
+import { isValidEmail, sanitizeInput, getClientIP } from '../_lib/email';
 
-function getClientIP(request: NextRequest): string {
-  const xForwardedFor = request.headers.get('x-forwarded-for');
-  const xRealIP = request.headers.get('x-real-ip');
-  
-  if (xForwardedFor) {
-    return xForwardedFor.split(',')[0].trim();
-  }
-  
-  if (xRealIP) {
-    return xRealIP;
-  }
-  
-  return 'unknown';
+interface Env {
+  NEXT_PUBLIC_SUPABASE_URL: string;
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: string;
 }
 
-
-function isValidEmail(email: string): boolean {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
-}
-
-function sanitizeInput(input: string): string {
-  return input.trim().replace(/[<>]/g, '');
-}
-
-export async function GET() {
+export async function onRequestGet(context: { env: Env }) {
   try {
-    const totalCount = await getPetitionSignatureCount();
-    return NextResponse.json({
+    const supabase = createSupabaseClient(context.env);
+    const totalCount = await getPetitionSignatureCount(supabase);
+    
+    return Response.json({
       totalCount,
       lastUpdated: new Date().toISOString()
     });
   } catch (error) {
     console.error('Error fetching petition data:', error);
-    return NextResponse.json(
+    return Response.json(
       { error: 'Failed to fetch petition data' },
       { status: 500 }
     );
   }
 }
 
-export async function POST(request: NextRequest) {
+export async function onRequestPost(context: { request: Request; env: Env }) {
   try {
-    const body = await request.json();
+    const supabase = createSupabaseClient(context.env);
+    const body = await context.request.json() as any;
     const { email, firstName, lastName, city } = body;
 
     // Validation
     if (!email || !firstName || !lastName) {
-      return NextResponse.json(
+      return Response.json(
         { error: 'Email, first name, and last name are required' },
         { status: 400 }
       );
     }
 
     if (!isValidEmail(email)) {
-      return NextResponse.json(
+      return Response.json(
         { error: 'Invalid email format' },
         { status: 400 }
       );
     }
 
     if (firstName.length < 2 || lastName.length < 2) {
-      return NextResponse.json(
+      return Response.json(
         { error: 'First name and last name must be at least 2 characters long' },
         { status: 400 }
       );
     }
 
     // Check if email already exists
-    const existingSignature = await getPetitionSignature(email);
+    const existingSignature = await getPetitionSignature(supabase, email);
     if (existingSignature) {
-      return NextResponse.json(
+      return Response.json(
         { error: 'This email has already signed the petition' },
         { status: 409 }
       );
@@ -88,16 +67,16 @@ export async function POST(request: NextRequest) {
       first_name: sanitizeInput(firstName),
       last_name: sanitizeInput(lastName),
       city: city ? sanitizeInput(city) : undefined,
-      ip_address: getClientIP(request)
+      ip_address: getClientIP(context.request)
     };
 
     // Save to database
-    await savePetitionSignature(newSignature);
+    await savePetitionSignature(supabase, newSignature);
 
     // Get updated count
-    const totalCount = await getPetitionSignatureCount();
+    const totalCount = await getPetitionSignatureCount(supabase);
 
-    return NextResponse.json({
+    return Response.json({
       success: true,
       totalCount,
       message: 'Petition signed successfully'
@@ -107,13 +86,13 @@ export async function POST(request: NextRequest) {
     console.error('Error processing petition signature:', error);
     
     if (error instanceof Error && error.message.includes('already signed')) {
-      return NextResponse.json(
+      return Response.json(
         { error: error.message },
         { status: 409 }
       );
     }
     
-    return NextResponse.json(
+    return Response.json(
       { error: 'Failed to process petition signature' },
       { status: 500 }
     );

@@ -1,6 +1,18 @@
-import { Resend } from 'resend';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+// Dynamically import Resend to avoid bundling issues with Cloudflare Workers
+let resend: any = null;
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const getResend = async () => {
+  if (!resend && process.env.RESEND_API_KEY) {
+    try {
+      const { Resend } = await import('resend');
+      resend = new Resend(process.env.RESEND_API_KEY);
+    } catch (error) {
+      console.warn('Failed to import Resend:', error);
+    }
+  }
+  return resend;
+};
 
 interface ContactFormData {
   name: string;
@@ -20,8 +32,13 @@ export async function sendContactNotification(data: ContactFormData) {
     return { success: false, error: 'Admin email not configured' };
   }
 
+  const resendClient = await getResend();
+  if (!resendClient) {
+    return { success: false, error: 'Email service not available' };
+  }
+
   try {
-    await resend.emails.send({
+    await resendClient.emails.send({
       from: 'noreply@freepalestine.com',
       to: process.env.ADMIN_EMAIL,
       subject: `New Contact Form: ${data.subject}`,
@@ -49,8 +66,13 @@ export async function sendAutoReply(data: ContactFormData) {
     return { success: false, error: 'Email service not configured' };
   }
 
+  const resendClient = await getResend();
+  if (!resendClient) {
+    return { success: false, error: 'Email service not available' };
+  }
+
   try {
-    await resend.emails.send({
+    await resendClient.emails.send({
       from: 'noreply@freepalestine.com',
       to: data.email,
       subject: 'Mesajınızı Aldık - Free Palestine',
@@ -82,10 +104,15 @@ export async function sendNewsletterWelcome(data: NewsletterWelcomeData) {
     return { success: false, error: 'Email service not configured' };
   }
 
+  const resendClient = await getResend();
+  if (!resendClient) {
+    return { success: false, error: 'Email service not available' };
+  }
+
   try {
     const greeting = data.firstName ? `Merhaba ${data.firstName}` : 'Merhaba';
     
-    await resend.emails.send({
+    await resendClient.emails.send({
       from: 'noreply@freepalestine.com',
       to: data.email,
       subject: 'Free Palestine Newsletter\'a Hoş Geldiniz!',
