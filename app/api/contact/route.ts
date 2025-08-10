@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseClient, saveContact } from '../../../functions/_lib/database';
-import { isValidEmail, sendContactNotification, sendAutoReply } from '../../../functions/_lib/email';
+import { sendContactNotification, sendAutoReply } from '../../../functions/_lib/email';
+import { withMiddleware, CommonSchemas, RateLimits } from '../../../lib/middleware';
 
 interface Env extends Record<string, string | undefined> {
   NEXT_PUBLIC_SUPABASE_URL: string;
@@ -9,7 +10,8 @@ interface Env extends Record<string, string | undefined> {
   ADMIN_EMAIL: string;
 }
 
-export async function POST(request: NextRequest) {
+async function handleContactSubmission(...args: unknown[]) {
+  const [request, validatedData] = args as [NextRequest, Record<string, unknown>];
   try {
     const env: Env = {
       NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -19,53 +21,19 @@ export async function POST(request: NextRequest) {
     };
 
     const supabase = createSupabaseClient(env);
-    const body = await request.json();
-    const { name, email, subject, message } = body;
+    const { name, email, subject, message } = validatedData;
 
-    // Basic validation
-    if (!name || !email || !subject || !message) {
-      return NextResponse.json(
-        { error: 'All fields are required' },
-        { status: 400 }
-      );
-    }
-
-    // Email validation
-    if (!isValidEmail(email)) {
-      return NextResponse.json(
-        { error: 'Invalid email address' },
-        { status: 400 }
-      );
-    }
-
-    // Length validations
-    if (name.length < 2) {
-      return NextResponse.json(
-        { error: 'Name must be at least 2 characters' },
-        { status: 400 }
-      );
-    }
-
-    if (subject.length < 5) {
-      return NextResponse.json(
-        { error: 'Subject must be at least 5 characters' },
-        { status: 400 }
-      );
-    }
-
-    if (message.length < 10) {
-      return NextResponse.json(
-        { error: 'Message must be at least 10 characters' },
-        { status: 400 }
-      );
-    }
-
-    const contactData = { name, email, subject, message };
+    const contactData = { 
+      name: name as string, 
+      email: email as string, 
+      subject: subject as string, 
+      message: message as string 
+    };
 
     // Save to database
     await saveContact(supabase, contactData);
 
-    // Send notifications (logged for now)
+    // Send notifications
     try {
       await Promise.all([
         sendContactNotification(env, contactData),
@@ -89,3 +57,9 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
+export const POST = withMiddleware({
+  validation: CommonSchemas.contact.validation,
+  sanitization: CommonSchemas.contact.sanitization,
+  rateLimit: RateLimits.contact
+})(handleContactSubmission);

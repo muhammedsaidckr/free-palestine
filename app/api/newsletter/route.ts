@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseClient, saveNewsletterSubscription, getNewsletterSubscription, getNewsletterSubscriberCount } from '../../../functions/_lib/database';
-import { isValidEmail, sendNewsletterWelcome } from '../../../functions/_lib/email';
+import { sendNewsletterWelcome } from '../../../functions/_lib/email';
+import { withMiddleware, CommonSchemas, RateLimits } from '../../../lib/middleware';
 
 interface Env extends Record<string, string | undefined> {
   NEXT_PUBLIC_SUPABASE_URL: string;
@@ -9,7 +10,8 @@ interface Env extends Record<string, string | undefined> {
   ADMIN_EMAIL: string;
 }
 
-export async function POST(request: NextRequest) {
+async function handleNewsletterSubscription(...args: unknown[]) {
+  const [request, validatedData] = args as [NextRequest, Record<string, unknown>];
   try {
     const env: Env = {
       NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -19,27 +21,10 @@ export async function POST(request: NextRequest) {
     };
 
     const supabase = createSupabaseClient(env);
-    const body = await request.json();
-    const { email, firstName, interests } = body;
-
-    // Basic validation
-    if (!email) {
-      return NextResponse.json(
-        { error: 'Email address is required' },
-        { status: 400 }
-      );
-    }
-
-    // Email validation
-    if (!isValidEmail(email)) {
-      return NextResponse.json(
-        { error: 'Invalid email address' },
-        { status: 400 }
-      );
-    }
+    const { email, firstName, interests } = validatedData;
 
     // Check if already subscribed
-    const existingSubscription = await getNewsletterSubscription(supabase, email);
+    const existingSubscription = await getNewsletterSubscription(supabase, email as string);
     if (existingSubscription) {
       return NextResponse.json(
         { error: 'This email address is already subscribed' },
@@ -49,12 +34,12 @@ export async function POST(request: NextRequest) {
 
     // Save to database
     const subscription = await saveNewsletterSubscription(supabase, {
-      email: email.toLowerCase(),
-      first_name: firstName || null,
-      interests: interests || []
+      email: email as string,
+      first_name: (firstName as string) || undefined,
+      interests: (interests as string[]) || []
     });
 
-    // Send welcome email (logged for now)
+    // Send welcome email
     try {
       await sendNewsletterWelcome(env, {
         email: subscription.email,
@@ -86,7 +71,8 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function GET() {
+async function handleGetSubscriberCount(...args: unknown[]) {
+  const [request] = args as [NextRequest];
   try {
     const env: Env = {
       NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -96,7 +82,6 @@ export async function GET() {
     };
 
     const supabase = createSupabaseClient(env);
-    // Return subscriber count for admin purposes
     const count = await getNewsletterSubscriberCount(supabase);
     return NextResponse.json({
       subscriberCount: count
@@ -109,3 +94,17 @@ export async function GET() {
     );
   }
 }
+
+export const POST = withMiddleware({
+  validation: CommonSchemas.newsletter.validation,
+  sanitization: CommonSchemas.newsletter.sanitization,
+  rateLimit: RateLimits.newsletter
+})(handleNewsletterSubscription);
+
+export const GET = withMiddleware({
+  rateLimit: {
+    windowMs: 1 * 60 * 1000, // 1 minute
+    maxRequests: 30,
+    message: 'Too many requests for subscriber count.'
+  }
+})(handleGetSubscriberCount);

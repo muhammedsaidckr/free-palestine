@@ -1,4 +1,5 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
+import { withMiddleware, RateLimits } from '../../../lib/middleware';
 
 export interface NewsItem {
   id: string;
@@ -158,7 +159,8 @@ const FALLBACK_NEWS: NewsItem[] = [
   }
 ];
 
-export async function GET() {
+async function handleGetNews(...args: unknown[]) {
+  const [request] = args as [NextRequest];
   try {
     // Try to fetch from Al Jazeera
     const alJazeeraNews = await fetchAlJazeeraNews();
@@ -183,3 +185,7 @@ export async function GET() {
     });
   }
 }
+
+export const GET = withMiddleware({
+  rateLimit: RateLimits.news
+})(handleGetNews);

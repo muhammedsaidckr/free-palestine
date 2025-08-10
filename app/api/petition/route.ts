@@ -1,13 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseClient, savePetitionSignature, getPetitionSignature, getPetitionSignatureCount } from '../../../functions/_lib/database';
-import { isValidEmail, sanitizeInput, getClientIP } from '../../../functions/_lib/email';
+import { getClientIP } from '../../../functions/_lib/email';
+import { withMiddleware, CommonSchemas, RateLimits } from '../../../lib/middleware';
 
 interface Env extends Record<string, string | undefined> {
   NEXT_PUBLIC_SUPABASE_URL: string;
   NEXT_PUBLIC_SUPABASE_ANON_KEY: string;
 }
 
-export async function GET() {
+async function handleGetPetitionCount(...args: unknown[]) {
+  const [request] = args as [NextRequest];
   try {
     const env: Env = {
       NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -30,7 +32,8 @@ export async function GET() {
   }
 }
 
-export async function POST(request: NextRequest) {
+async function handlePetitionSignature(...args: unknown[]) {
+  const [request, validatedData] = args as [NextRequest, Record<string, unknown>];
   try {
     const env: Env = {
       NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -38,33 +41,10 @@ export async function POST(request: NextRequest) {
     };
 
     const supabase = createSupabaseClient(env);
-    const body = await request.json();
-    const { email, firstName, lastName, city } = body;
-
-    // Validation
-    if (!email || !firstName || !lastName) {
-      return NextResponse.json(
-        { error: 'Email, first name, and last name are required' },
-        { status: 400 }
-      );
-    }
-
-    if (!isValidEmail(email)) {
-      return NextResponse.json(
-        { error: 'Invalid email format' },
-        { status: 400 }
-      );
-    }
-
-    if (firstName.length < 2 || lastName.length < 2) {
-      return NextResponse.json(
-        { error: 'First name and last name must be at least 2 characters long' },
-        { status: 400 }
-      );
-    }
+    const { email, firstName, lastName, city } = validatedData;
 
     // Check if email already exists
-    const existingSignature = await getPetitionSignature(supabase, email);
+    const existingSignature = await getPetitionSignature(supabase, email as string);
     if (existingSignature) {
       return NextResponse.json(
         { error: 'This email has already signed the petition' },
@@ -74,10 +54,10 @@ export async function POST(request: NextRequest) {
 
     // Create new signature
     const newSignature = {
-      email: sanitizeInput(email.toLowerCase()),
-      first_name: sanitizeInput(firstName),
-      last_name: sanitizeInput(lastName),
-      city: city ? sanitizeInput(city) : undefined,
+      email: email as string,
+      first_name: firstName as string,
+      last_name: lastName as string,
+      city: (city as string) || undefined,
       ip_address: getClientIP(request)
     };
 
@@ -109,3 +89,17 @@ export async function POST(request: NextRequest) {
     );
   }
 }
+
+export const GET = withMiddleware({
+  rateLimit: {
+    windowMs: 1 * 60 * 1000, // 1 minute
+    maxRequests: 60,
+    message: 'Too many requests for petition count.'
+  }
+})(handleGetPetitionCount);
+
+export const POST = withMiddleware({
+  validation: CommonSchemas.petition.validation,
+  sanitization: CommonSchemas.petition.sanitization,
+  rateLimit: RateLimits.petition
+})(handlePetitionSignature);
