@@ -1,7 +1,7 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
 // Create Supabase client for Cloudflare Workers
-export function createSupabaseClient(env: any): SupabaseClient {
+export function createSupabaseClient(env: Record<string, string | undefined>): SupabaseClient {
   const supabaseUrl = env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseKey = env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
   

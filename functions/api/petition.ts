@@ -1,7 +1,7 @@
 import { createSupabaseClient, savePetitionSignature, getPetitionSignature, getPetitionSignatureCount } from '../_lib/database';
 import { isValidEmail, sanitizeInput, getClientIP } from '../_lib/email';
 
-interface Env {
+interface Env extends Record<string, string | undefined> {
   NEXT_PUBLIC_SUPABASE_URL: string;
   NEXT_PUBLIC_SUPABASE_ANON_KEY: string;
 }

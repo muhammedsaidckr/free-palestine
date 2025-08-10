@@ -1,7 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 
 // Function to create Supabase client with environment variables
-function createSupabaseClient(env?: any) {
+function createSupabaseClient(env?: Record<string, string>) {
   let supabaseUrl: string;
   let supabaseKey: string;
   

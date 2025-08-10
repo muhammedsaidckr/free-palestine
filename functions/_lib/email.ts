@@ -11,7 +11,7 @@ interface NewsletterWelcomeData {
   firstName?: string;
 }
 
-export async function sendContactNotification(env: any, data: ContactFormData) {
+export async function sendContactNotification(env: Record<string, string | undefined>, data: ContactFormData) {
   // For now, just log the contact submission
   // In production, you could use Cloudflare's Email API, SendGrid, or another service
   console.log('Contact form submission:', {
@@ -25,14 +25,14 @@ export async function sendContactNotification(env: any, data: ContactFormData) {
   return { success: true, message: 'Contact notification logged' };
 }
 
-export async function sendAutoReply(env: any, data: ContactFormData) {
+export async function sendAutoReply(env: Record<string, string | undefined>, data: ContactFormData) {
   // For now, just log the auto-reply
   console.log('Auto-reply would be sent to:', data.email);
   
   return { success: true, message: 'Auto-reply logged' };
 }
 
-export async function sendNewsletterWelcome(env: any, data: NewsletterWelcomeData) {
+export async function sendNewsletterWelcome(env: Record<string, string | undefined>, data: NewsletterWelcomeData) {
   // For now, just log the welcome email
   console.log('Newsletter welcome would be sent to:', data.email, 'Name:', data.firstName);
   
