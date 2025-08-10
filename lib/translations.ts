@@ -17,6 +17,7 @@ export const translations: Translations = {
       titleHighlight: 'Birlikte',
       titleEnd: 'Duralım',
       description: '58,573+ canın kaybedildiği, 139,607+ kişinin yaralandığı Gazze\'de süren insani krize karşı Türkiye\'den ses çıkarıyoruz. Sessiz kalmayacağız, umudumuzu kaybetmeyeceğiz.',
+      inspirationalMessage: 'Unutma, İsrail\'in vahşeti karşısında Filistin\'e taraf olmak herhangi bir millete ya da devlete taraf olmak değildir. Filistin\'e taraf olmak insanlığa yani kendine taraf olmaktır.',
       actionButton: 'Harekete Geç',
       infoButton: 'Bilgi Al'
     },
@@ -270,6 +271,7 @@ export const translations: Translations = {
       titleHighlight: 'Together',
       titleEnd: 'for Palestine',
       description: 'From Türkiye, we raise our voice against the ongoing humanitarian crisis in Gaza where 58,573+ lives were lost and 139,607+ people were injured. We will not remain silent, we will not lose hope.',
+      inspirationalMessage: 'Remember, standing with Palestine in the face of Israeli brutality is not about taking sides with any nation or state. Standing with Palestine means standing with humanity, standing with yourself.',
       actionButton: 'Take Action',
       infoButton: 'Get Info'
     },

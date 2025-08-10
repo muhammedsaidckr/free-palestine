@@ -338,6 +338,9 @@ export default function Home() {
           <p className="text-xl text-white mb-8 max-w-3xl mx-auto drop-shadow-md">
             {t('hero.description')}
           </p>
+          <p className="text-lg text-white mb-8 max-w-4xl mx-auto drop-shadow-md italic font-medium">
+            {t('hero.inspirationalMessage')}
+          </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button 
               onClick={() => scrollToSection('hareket')}
