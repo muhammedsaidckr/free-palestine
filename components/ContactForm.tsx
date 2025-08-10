@@ -178,7 +178,7 @@ export default function ContactForm({ className = '', compact = false }: Contact
               value={formData.name}
               onChange={handleInputChange}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#CE1126] focus:border-transparent"
+              className="w-full px-3 py-2 bg-white border border-gray-400 rounded-lg focus:ring-2 focus:ring-[#CE1126] focus:border-[#CE1126] text-gray-900 placeholder-gray-500"
               placeholder={t('contact.form.namePlaceholder')}
             />
           </div>
@@ -194,7 +194,7 @@ export default function ContactForm({ className = '', compact = false }: Contact
               value={formData.email}
               onChange={handleInputChange}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#CE1126] focus:border-transparent"
+              className="w-full px-3 py-2 bg-white border border-gray-400 rounded-lg focus:ring-2 focus:ring-[#CE1126] focus:border-[#CE1126] text-gray-900 placeholder-gray-500"
               placeholder={t('contact.form.emailPlaceholder')}
             />
           </div>
@@ -227,7 +227,7 @@ export default function ContactForm({ className = '', compact = false }: Contact
             onChange={handleInputChange}
             required
             rows={5}
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#CE1126] focus:border-transparent resize-vertical"
+            className="w-full px-3 py-2 bg-white border border-gray-400 rounded-lg focus:ring-2 focus:ring-[#CE1126] focus:border-[#CE1126] text-gray-900 placeholder-gray-500 resize-vertical"
             placeholder={t('contact.form.messagePlaceholder')}
           />
         </div>

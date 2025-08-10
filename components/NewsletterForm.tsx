@@ -154,7 +154,7 @@ export default function NewsletterForm({ className = '', compact = false, inline
             value={formData.email}
             onChange={handleInputChange}
             required
-            className="flex-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#CE1126] focus:border-transparent text-sm"
+            className="flex-1 px-3 py-2 bg-white border border-gray-400 rounded-lg focus:ring-2 focus:ring-[#CE1126] focus:border-[#CE1126] text-gray-900 placeholder-gray-500 text-sm"
             placeholder={t('newsletter.form.emailPlaceholder')}
           />
           
@@ -198,7 +198,7 @@ export default function NewsletterForm({ className = '', compact = false, inline
               value={formData.email}
               onChange={handleInputChange}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#CE1126] focus:border-transparent"
+              className="w-full px-3 py-2 bg-white border border-gray-400 rounded-lg focus:ring-2 focus:ring-[#CE1126] focus:border-[#CE1126] text-gray-900 placeholder-gray-500"
               placeholder={t('newsletter.form.emailPlaceholder')}
             />
           </div>
@@ -214,7 +214,7 @@ export default function NewsletterForm({ className = '', compact = false, inline
                 name="firstName"
                 value={formData.firstName}
                 onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#CE1126] focus:border-transparent"
+                className="w-full px-3 py-2 bg-white border border-gray-400 rounded-lg focus:ring-2 focus:ring-[#CE1126] focus:border-[#CE1126] text-gray-900 placeholder-gray-500"
                 placeholder={t('newsletter.form.firstNamePlaceholder')}
               />
             </div>

@@ -244,7 +244,7 @@ export default function PetitionForm({ onSignatureSuccess, className = '', compa
               value={formData.firstName}
               onChange={handleInputChange}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#CE1126] focus:border-transparent"
+              className="w-full px-3 py-2 bg-white border border-gray-400 rounded-lg focus:ring-2 focus:ring-[#CE1126] focus:border-[#CE1126] text-gray-900 placeholder-gray-500"
               placeholder={t('petition.form.firstNamePlaceholder')}
             />
           </div>
@@ -260,7 +260,7 @@ export default function PetitionForm({ onSignatureSuccess, className = '', compa
               value={formData.lastName}
               onChange={handleInputChange}
               required
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-[#CE1126] focus:border-transparent"
+              className="w-full px-3 py-2 bg-white border border-gray-400 rounded-lg focus:ring-2 focus:ring-[#CE1126] focus:border-[#CE1126] text-gray-900 placeholder-gray-500"
               placeholder={t('petition.form.lastNamePlaceholder')}
             />
           </div>
