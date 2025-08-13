@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { useI18n } from "@/components/I18nProvider";
 import { Timeline } from "@/components/Timeline";
 import { newsService, NewsItem } from "@/lib/newsService";
+import { statisticsService, StatisticsData } from "@/lib/statisticsService";
 import PetitionForm from "@/components/PetitionForm";
 import ContactForm from "@/components/ContactForm";
 import NewsletterForm from "@/components/NewsletterForm";
@@ -14,6 +15,9 @@ export default function Home() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [newsItems, setNewsItems] = useState<NewsItem[]>([]);
   const [newsLoading, setNewsLoading] = useState(true);
+  const [statistics, setStatistics] = useState<StatisticsData | null>(null);
+  const [statisticsLoading, setStatisticsLoading] = useState(true);
+  const [statisticsError, setStatisticsError] = useState<string | null>(null);
   const { language, setLanguage, t } = useI18n();
 
   const toggleMobileMenu = () => {
@@ -78,7 +82,30 @@ export default function Home() {
       }
     };
 
+    const fetchStatistics = async () => {
+      try {
+        setStatisticsLoading(true);
+        setStatisticsError(null);
+        const stats = await statisticsService.getStatistics();
+        setStatistics(stats);
+      } catch (error) {
+        console.error('Error fetching statistics:', error);
+        setStatisticsError('İstatistikler yüklenirken hata oluştu');
+        // Set fallback data on error
+        setStatistics({
+          casualties: 58573,
+          injured: 139607,
+          displaced_percentage: 90,
+          aid_packages: 45000,
+          source_name: 'Gaza Health Ministry'
+        });
+      } finally {
+        setStatisticsLoading(false);
+      }
+    };
+
     fetchHomePageNews();
+    fetchStatistics();
   }, []);
 
   const getCategoryBadgeColor = (category: string) => {
@@ -368,28 +395,56 @@ export default function Home() {
             </p>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            <div className="bg-white p-6 rounded-lg shadow-md text-center">
-              <div className="text-3xl font-bold text-[#CE1126] mb-2">58,573+</div>
-              <div className="text-gray-600">{t('situation.casualties')}</div>
-              <div className="text-xs text-gray-500 mt-1">{t('situation.date')}</div>
+          {statisticsLoading ? (
+            <div className="text-center py-8">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#CE1126] mx-auto mb-4"></div>
+              <p className="text-gray-600">İstatistikler yükleniyor...</p>
             </div>
-            <div className="bg-white p-6 rounded-lg shadow-md text-center">
-              <div className="text-3xl font-bold text-[#CE1126] mb-2">139,607+</div>
-              <div className="text-gray-600">{t('situation.injured')}</div>
-              <div className="text-xs text-gray-500 mt-1">{t('situation.date')}</div>
+          ) : statisticsError ? (
+            <div className="text-center py-8">
+              <div className="text-red-600 mb-4">{statisticsError}</div>
+              <button 
+                onClick={() => window.location.reload()} 
+                className="bg-[#CE1126] text-white px-4 py-2 rounded hover:bg-[#B00E20] transition-colors"
+              >
+                Tekrar Dene
+              </button>
             </div>
-            <div className="bg-white p-6 rounded-lg shadow-md text-center">
-              <div className="text-3xl font-bold text-[#CE1126] mb-2">90%</div>
-              <div className="text-gray-600">{t('situation.displaced')}</div>
-              <div className="text-xs text-gray-500 mt-1">{t('situation.displacedLocation')}</div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
+              <div className="bg-white p-6 rounded-lg shadow-md text-center">
+                <div className="text-3xl font-bold text-[#CE1126] mb-2">{statistics?.casualties.toLocaleString('tr-TR')}+</div>
+                <div className="text-gray-600">{t('situation.casualties')}</div>
+                <div className="text-xs text-gray-500 mt-1">{t('situation.date')}</div>
+              </div>
+              <div className="bg-white p-6 rounded-lg shadow-md text-center">
+                <div className="text-3xl font-bold text-[#CE1126] mb-2">{statistics?.injured.toLocaleString('tr-TR')}+</div>
+                <div className="text-gray-600">{t('situation.injured')}</div>
+                <div className="text-xs text-gray-500 mt-1">{t('situation.date')}</div>
+              </div>
+              <div className="bg-white p-6 rounded-lg shadow-md text-center">
+                <div className="text-3xl font-bold text-[#CE1126] mb-2">{statistics?.displaced_percentage}%</div>
+                <div className="text-gray-600">{t('situation.displaced')}</div>
+                <div className="text-xs text-gray-500 mt-1">{t('situation.displacedLocation')}</div>
+              </div>
+              <div className="bg-white p-6 rounded-lg shadow-md text-center">
+                <div className="text-3xl font-bold text-[#CE1126] mb-2">{statistics?.aid_packages.toLocaleString('tr-TR')}</div>
+                <div className="text-gray-600">{t('situation.aid')}</div>
+                <div className="text-xs text-gray-500 mt-1">{t('situation.aidFrom')}</div>
+              </div>
             </div>
-            <div className="bg-white p-6 rounded-lg shadow-md text-center">
-              <div className="text-3xl font-bold text-[#CE1126] mb-2">45,000</div>
-              <div className="text-gray-600">{t('situation.aid')}</div>
-              <div className="text-xs text-gray-500 mt-1">{t('situation.aidFrom')}</div>
+          )}
+          
+          {statistics && statistics.source_name && !statisticsLoading && (
+            <div className="text-center mt-8 text-sm text-gray-500">
+              Kaynak: {statistics.source_name}
+              {statistics.last_updated && (
+                <span className="ml-2">
+                  • Son güncelleme: {new Date(statistics.last_updated).toLocaleDateString('tr-TR')}
+                </span>
+              )}
             </div>
-          </div>
+          )}
         </div>
       </section>
 

@@ -193,3 +193,68 @@ export async function getPetitionSignatures() {
 
   return data;
 }
+
+export interface PalestineStatistics {
+  id?: number;
+  casualties: number;
+  injured: number;
+  displaced_percentage: number;
+  aid_packages: number;
+  source_url?: string;
+  source_name?: string;
+  last_updated?: string;
+  created_at?: string;
+  is_active?: boolean;
+}
+
+export async function getLatestStatistics(): Promise<PalestineStatistics | null> {
+  const { data, error } = await supabase
+    .from('latest_palestine_statistics')
+    .select('*')
+    .single();
+
+  if (error && error.code !== 'PGRST116') {
+    console.error('Failed to fetch latest statistics:', error.message);
+    // Return default statistics if database fails
+    return {
+      casualties: 58573,
+      injured: 139607,
+      displaced_percentage: 90,
+      aid_packages: 45000,
+      source_name: 'Gaza Health Ministry',
+      last_updated: new Date().toISOString()
+    };
+  }
+
+  return data;
+}
+
+export async function updateStatistics(stats: Omit<PalestineStatistics, 'id' | 'created_at'>): Promise<PalestineStatistics> {
+  const { data, error } = await supabase
+    .from('palestine_statistics')
+    .insert([{
+      ...stats,
+      last_updated: new Date().toISOString()
+    }])
+    .select();
+
+  if (error) {
+    throw new Error(`Failed to update statistics: ${error.message}`);
+  }
+
+  return data[0];
+}
+
+export async function getAllStatistics(): Promise<PalestineStatistics[]> {
+  const { data, error } = await supabase
+    .from('palestine_statistics')
+    .select('*')
+    .eq('is_active', true)
+    .order('last_updated', { ascending: false });
+
+  if (error) {
+    throw new Error(`Failed to fetch statistics: ${error.message}`);
+  }
+
+  return data || [];
+}
