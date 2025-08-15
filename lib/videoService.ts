@@ -31,6 +31,10 @@ export interface CreateVideoData {
 }
 
 export class VideoService {
+  // Cache for video data
+  private static cache: Map<string, { data: VideoItem[]; timestamp: number }> = new Map();
+  private static readonly CACHE_DURATION = 15 * 60 * 1000; // 15 minutes
+
   // Convert database video to VideoItem format
   private static convertToVideoItem(video: VideoData): VideoItem {
     return {
@@ -46,6 +50,14 @@ export class VideoService {
   }
 
   static async getAllVideos(): Promise<VideoItem[]> {
+    const cacheKey = 'all-videos';
+    const cached = this.cache.get(cacheKey);
+    
+    // Return cached data if still fresh
+    if (cached && Date.now() - cached.timestamp < this.CACHE_DURATION) {
+      return cached.data;
+    }
+
     try {
       const supabase = await createClient();
       const { data, error } = await supabase
@@ -59,7 +71,12 @@ export class VideoService {
         return this.getFallbackVideos();
       }
 
-      return data.map(this.convertToVideoItem);
+      const videos = data.map(this.convertToVideoItem);
+      
+      // Cache the result
+      this.cache.set(cacheKey, { data: videos, timestamp: Date.now() });
+      
+      return videos;
     } catch (error) {
       console.error('Error in getAllVideos:', error);
       return this.getFallbackVideos();
@@ -69,6 +86,14 @@ export class VideoService {
   static async getVideosByCategory(category: string): Promise<VideoItem[]> {
     if (category === 'all') {
       return this.getAllVideos();
+    }
+
+    const cacheKey = `videos-category-${category}`;
+    const cached = this.cache.get(cacheKey);
+    
+    // Return cached data if still fresh
+    if (cached && Date.now() - cached.timestamp < this.CACHE_DURATION) {
+      return cached.data;
     }
 
     try {
@@ -85,7 +110,12 @@ export class VideoService {
         return this.getFallbackVideos().filter(v => v.category === category);
       }
 
-      return data.map(this.convertToVideoItem);
+      const videos = data.map(this.convertToVideoItem);
+      
+      // Cache the result
+      this.cache.set(cacheKey, { data: videos, timestamp: Date.now() });
+      
+      return videos;
     } catch (error) {
       console.error('Error in getVideosByCategory:', error);
       return this.getFallbackVideos().filter(v => v.category === category);
@@ -93,6 +123,14 @@ export class VideoService {
   }
 
   static async getFeaturedVideos(count: number = 3): Promise<VideoItem[]> {
+    const cacheKey = `featured-videos-${count}`;
+    const cached = this.cache.get(cacheKey);
+    
+    // Return cached data if still fresh
+    if (cached && Date.now() - cached.timestamp < this.CACHE_DURATION) {
+      return cached.data;
+    }
+
     try {
       const supabase = await createClient();
       const { data, error } = await supabase
@@ -109,7 +147,12 @@ export class VideoService {
         return this.getFallbackVideos().slice(0, count);
       }
 
-      return data.map(this.convertToVideoItem);
+      const videos = data.map(this.convertToVideoItem);
+      
+      // Cache the result
+      this.cache.set(cacheKey, { data: videos, timestamp: Date.now() });
+      
+      return videos;
     } catch (error) {
       console.error('Error in getFeaturedVideos:', error);
       return this.getFallbackVideos().slice(0, count);
@@ -155,6 +198,9 @@ export class VideoService {
         return null;
       }
 
+      // Invalidate all caches when a new video is created
+      this.invalidateAllCaches();
+
       return data;
     } catch (error) {
       console.error('Error in createVideo:', error);
@@ -178,6 +224,9 @@ export class VideoService {
         throw error;
       }
 
+      // Invalidate all caches when a video is updated
+      this.invalidateAllCaches();
+
       return data;
     } catch (error) {
       console.error('Error in updateVideo:', error);
@@ -197,6 +246,9 @@ export class VideoService {
         console.error('Error deleting video:', error);
         return false;
       }
+
+      // Invalidate all caches when a video is deleted
+      this.invalidateAllCaches();
 
       return true;
     } catch (error) {
@@ -326,6 +378,32 @@ export class VideoService {
       console.error('Error in getCategoryStats:', error);
       return {};
     }
+  }
+
+  // Cache management methods
+  static clearCache(): void {
+    this.cache.clear();
+  }
+
+  static clearCacheKey(key: string): void {
+    this.cache.delete(key);
+  }
+
+  static getCacheStats() {
+    return {
+      size: this.cache.size,
+      entries: Array.from(this.cache.entries()).map(([key, value]) => ({
+        key,
+        timestamp: value.timestamp,
+        age: Date.now() - value.timestamp,
+        isStale: Date.now() - value.timestamp > this.CACHE_DURATION
+      }))
+    };
+  }
+
+  private static invalidateAllCaches(): void {
+    // Clear all video-related caches when data changes
+    this.cache.clear();
   }
 }
 
