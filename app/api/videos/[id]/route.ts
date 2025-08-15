@@ -127,11 +127,13 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       data: video
     });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error in PUT /api/videos/[id]:', error);
     
     // Handle duplicate video_id constraint violation
-    if (error?.code === '23505' && error?.message?.includes('videos_video_id_key')) {
+    if (error && typeof error === 'object' && 'code' in error && 'message' in error && 
+        error.code === '23505' && typeof error.message === 'string' && 
+        error.message.includes('videos_video_id_key')) {
       return NextResponse.json(
         {
           success: false,
