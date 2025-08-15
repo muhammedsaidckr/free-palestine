@@ -9,8 +9,10 @@ export async function middleware(request: NextRequest) {
   // Refresh session if expired - required for Server Components
   await supabase.auth.getUser()
 
-  // Protect admin routes
-  if (request.nextUrl.pathname.startsWith('/admin')) {
+  // Protect admin routes (except login and unauthorized pages)
+  if (request.nextUrl.pathname.startsWith('/admin') && 
+      !request.nextUrl.pathname.startsWith('/admin/login') && 
+      !request.nextUrl.pathname.startsWith('/admin/unauthorized')) {
     const { data: { user } } = await supabase.auth.getUser()
     
     if (!user) {
@@ -25,16 +27,12 @@ export async function middleware(request: NextRequest) {
     const userMetadata = user.user_metadata || {}
     const appMetadata = user.app_metadata || {}
     
-    if (!userMetadata.role && !appMetadata.role) {
-      // If no role is set, redirect to unauthorized page
-      const url = request.nextUrl.clone()
-      url.pathname = '/admin/unauthorized'
-      return NextResponse.redirect(url)
-    }
-
     const userRole = userMetadata.role || appMetadata.role
-    if (userRole !== 'admin' && userRole !== 'editor') {
-      // If user doesn't have admin/editor role, redirect to unauthorized page
+    
+    // Only redirect to unauthorized if user explicitly has a role that's not admin/editor
+    // If no role is set, allow access (they can be granted admin role later)
+    if (userRole && userRole !== 'admin' && userRole !== 'editor') {
+      // If user has a role but it's not admin/editor, redirect to unauthorized page
       const url = request.nextUrl.clone()
       url.pathname = '/admin/unauthorized'
       return NextResponse.redirect(url)
