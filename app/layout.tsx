@@ -81,7 +81,11 @@ export const metadata: Metadata = {
   },
   category: "Society & Politics",
   icons: {
-    icon: '/favicon.ico',
+    icon: [
+      { url: '/favicon.ico', sizes: '16x16 32x32', type: 'image/x-icon' },
+    ],
+    shortcut: '/favicon.ico',
+    apple: '/favicon.ico',
   },
   manifest: '/manifest.json',
 };
@@ -94,6 +98,8 @@ export default function RootLayout({
   return (
     <html lang="tr">
       <head>
+        <link rel="icon" href="/favicon.ico" sizes="16x16 32x32" type="image/x-icon" />
+        <link rel="shortcut icon" href="/favicon.ico" />
         <StructuredData type="website" />
         <StructuredData type="organization" />
       </head>
