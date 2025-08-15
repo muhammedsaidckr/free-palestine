@@ -227,3 +227,141 @@ export function withValidation(schema: ValidationSchema) {
 export function createValidationMiddleware(schema: ValidationSchema) {
   return withValidation(schema);
 }
+
+// Video-specific validation schemas and functions
+export const videoValidationSchema: ValidationSchema = {
+  title: {
+    required: true,
+    type: 'string',
+    minLength: 1,
+    maxLength: 255
+  },
+  description: {
+    required: true,
+    type: 'string',
+    minLength: 1,
+    maxLength: 2000
+  },
+  video_id: {
+    required: true,
+    type: 'string',
+    pattern: /^[a-zA-Z0-9_-]{11}$/, // YouTube video ID format
+    custom: (value: unknown) => {
+      if (typeof value !== 'string') return false;
+      return /^[a-zA-Z0-9_-]{11}$/.test(value) || 'Invalid YouTube video ID format';
+    }
+  },
+  thumbnail_url: {
+    required: false,
+    type: 'string',
+    pattern: /^https?:\/\/.+/,
+    custom: (value: unknown) => {
+      if (typeof value !== 'string') return true; // Optional field
+      return /^https?:\/\/.+/.test(value) || 'Invalid URL format';
+    }
+  },
+  category: {
+    required: true,
+    type: 'string',
+    enum: ['documentary', 'news', 'testimony', 'solidarity', 'educational']
+  },
+  duration: {
+    required: false,
+    type: 'string',
+    pattern: /^PT(\d+H)?(\d+M)?(\d+S)?$/, // ISO 8601 duration format
+    custom: (value: unknown) => {
+      if (typeof value !== 'string') return true; // Optional field
+      return /^PT(\d+H)?(\d+M)?(\d+S)?$/.test(value) || 'Invalid duration format (use ISO 8601: PT15M30S)';
+    }
+  },
+  published_at: {
+    required: true,
+    type: 'string',
+    custom: (value: unknown) => {
+      if (typeof value !== 'string') return false;
+      const date = new Date(value);
+      return !isNaN(date.getTime()) || 'Invalid date format';
+    }
+  },
+  is_featured: {
+    required: false,
+    type: 'boolean'
+  },
+  sort_order: {
+    required: false,
+    type: 'number',
+    min: 0,
+    max: 9999
+  }
+};
+
+export const videoUpdateValidationSchema: ValidationSchema = {
+  ...videoValidationSchema,
+  // Make all fields optional for updates
+  title: { ...videoValidationSchema.title, required: false },
+  description: { ...videoValidationSchema.description, required: false },
+  video_id: { ...videoValidationSchema.video_id, required: false },
+  category: { ...videoValidationSchema.category, required: false },
+  published_at: { ...videoValidationSchema.published_at, required: false }
+};
+
+export function validateVideoData(data: Record<string, unknown>, isCreate: boolean = true): { isValid: boolean; errors: ValidationError[] } {
+  const schema = isCreate ? videoValidationSchema : videoUpdateValidationSchema;
+  const result = validate(data, schema);
+  
+  return {
+    isValid: result.valid,
+    errors: result.errors
+  };
+}
+
+export function sanitizeVideoData(data: Record<string, unknown>): Record<string, unknown> {
+  const sanitized: Record<string, unknown> = {};
+
+  // Sanitize title
+  if (data.title && typeof data.title === 'string') {
+    sanitized.title = data.title.trim().substring(0, 255);
+  }
+
+  // Sanitize description
+  if (data.description && typeof data.description === 'string') {
+    sanitized.description = data.description.trim().substring(0, 2000);
+  }
+
+  // Sanitize video_id
+  if (data.video_id && typeof data.video_id === 'string') {
+    sanitized.video_id = data.video_id.trim();
+  }
+
+  // Sanitize thumbnail_url
+  if (data.thumbnail_url && typeof data.thumbnail_url === 'string') {
+    sanitized.thumbnail_url = data.thumbnail_url.trim();
+  }
+
+  // Sanitize category
+  if (data.category && typeof data.category === 'string') {
+    sanitized.category = data.category.toLowerCase().trim();
+  }
+
+  // Sanitize duration
+  if (data.duration && typeof data.duration === 'string') {
+    sanitized.duration = data.duration.trim().toUpperCase();
+  }
+
+  // Sanitize published_at
+  if (data.published_at && typeof data.published_at === 'string') {
+    sanitized.published_at = new Date(data.published_at).toISOString();
+  }
+
+  // Sanitize is_featured
+  if (typeof data.is_featured === 'boolean') {
+    sanitized.is_featured = data.is_featured;
+  }
+
+  // Sanitize sort_order
+  if (data.sort_order && (typeof data.sort_order === 'number' || !isNaN(Number(data.sort_order)))) {
+    sanitized.sort_order = Math.max(0, Math.min(9999, Number(data.sort_order)));
+  }
+
+  return sanitized;
+}

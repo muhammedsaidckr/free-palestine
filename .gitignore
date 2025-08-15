@@ -43,5 +43,6 @@ next-env.d.ts
 CLAUDE.md
 UI_SCHEMA.md
 CLOUDFLARE_DEPLOYMENT.md
+ADMIN_SETUP.md
 
 .open-next/
