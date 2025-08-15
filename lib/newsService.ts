@@ -112,8 +112,11 @@ export class NewsService {
     }
   }
 
-  private createId(title: string, source: string): string {
-    return btoa(`${title}-${source}`).replace(/[^a-zA-Z0-9]/g, '').substring(0, 16);
+  private createId(title: string, source: string, date?: string): string {
+    // Include timestamp to ensure uniqueness
+    const timestamp = date || new Date().toISOString();
+    const uniqueString = `${title}-${source}-${timestamp}`;
+    return btoa(uniqueString).replace(/[^a-zA-Z0-9]/g, '').substring(0, 16);
   }
 
   private translateCategory(englishCategory: string, source: NewsSource): NewsItem['category'] {

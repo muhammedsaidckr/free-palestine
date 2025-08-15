@@ -31,13 +31,35 @@ export interface CreateVideoData {
 }
 
 export class VideoService {
-  // Cache for video data
-  private static cache: Map<string, { data: VideoItem[]; timestamp: number }> = new Map();
+  // Cache for video data - using object instead of Map for better serialization
+  private static cache: Record<string, { data: VideoItem[]; timestamp: number }> = {};
   private static readonly CACHE_DURATION = 15 * 60 * 1000; // 15 minutes
 
-  // Convert database video to VideoItem format
+  // Helper method to safely get cache
+  private static getCacheEntry(key: string): { data: VideoItem[]; timestamp: number } | undefined {
+    try {
+      return this.cache[key];
+    } catch (error) {
+      console.warn('Cache access error:', error);
+      return undefined;
+    }
+  }
+
+  // Helper method to safely set cache
+  private static setCacheEntry(key: string, data: VideoItem[]): void {
+    try {
+      // Ensure data is serializable by converting to plain objects
+      const serializedData = JSON.parse(JSON.stringify(data));
+      this.cache[key] = { data: serializedData, timestamp: Date.now() };
+    } catch (error) {
+      console.warn('Cache write error:', error);
+      // Continue without caching if there's an error
+    }
+  }
+
+  // Convert database video to VideoItem format - ensure plain object
   private static convertToVideoItem(video: VideoData): VideoItem {
-    return {
+    return JSON.parse(JSON.stringify({
       id: video.video_id,
       title: video.title,
       description: video.description,
@@ -46,12 +68,12 @@ export class VideoService {
       category: video.category,
       duration: video.duration,
       publishedAt: video.published_at
-    };
+    }));
   }
 
   static async getAllVideos(): Promise<VideoItem[]> {
     const cacheKey = 'all-videos';
-    const cached = this.cache.get(cacheKey);
+    const cached = this.getCacheEntry(cacheKey);
     
     // Return cached data if still fresh
     if (cached && Date.now() - cached.timestamp < this.CACHE_DURATION) {
@@ -60,6 +82,12 @@ export class VideoService {
 
     try {
       const supabase = await createClient();
+      
+      if (!supabase) {
+        console.error('Failed to create Supabase client');
+        return this.getFallbackVideos();
+      }
+
       const { data, error } = await supabase
         .from('videos')
         .select('*')
@@ -71,10 +99,15 @@ export class VideoService {
         return this.getFallbackVideos();
       }
 
+      if (!data) {
+        console.warn('No video data returned from database');
+        return this.getFallbackVideos();
+      }
+
       const videos = data.map(this.convertToVideoItem);
       
       // Cache the result
-      this.cache.set(cacheKey, { data: videos, timestamp: Date.now() });
+      this.setCacheEntry(cacheKey, videos);
       
       return videos;
     } catch (error) {
@@ -89,7 +122,7 @@ export class VideoService {
     }
 
     const cacheKey = `videos-category-${category}`;
-    const cached = this.cache.get(cacheKey);
+    const cached = this.getCacheEntry(cacheKey);
     
     // Return cached data if still fresh
     if (cached && Date.now() - cached.timestamp < this.CACHE_DURATION) {
@@ -113,7 +146,7 @@ export class VideoService {
       const videos = data.map(this.convertToVideoItem);
       
       // Cache the result
-      this.cache.set(cacheKey, { data: videos, timestamp: Date.now() });
+      this.setCacheEntry(cacheKey, videos);
       
       return videos;
     } catch (error) {
@@ -124,7 +157,7 @@ export class VideoService {
 
   static async getFeaturedVideos(count: number = 3): Promise<VideoItem[]> {
     const cacheKey = `featured-videos-${count}`;
-    const cached = this.cache.get(cacheKey);
+    const cached = this.getCacheEntry(cacheKey);
     
     // Return cached data if still fresh
     if (cached && Date.now() - cached.timestamp < this.CACHE_DURATION) {
@@ -150,7 +183,7 @@ export class VideoService {
       const videos = data.map(this.convertToVideoItem);
       
       // Cache the result
-      this.cache.set(cacheKey, { data: videos, timestamp: Date.now() });
+      this.setCacheEntry(cacheKey, videos);
       
       return videos;
     } catch (error) {
@@ -305,7 +338,7 @@ export class VideoService {
       }
     ];
 
-    return fallbackData.map(video => ({
+    return fallbackData.map(video => JSON.parse(JSON.stringify({
       id: video.videoId,
       title: video.title,
       description: video.description,
@@ -314,7 +347,7 @@ export class VideoService {
       category: video.category,
       duration: video.duration,
       publishedAt: video.publishedAt
-    }));
+    })));
   }
 
   static async fetchYouTubeData(videoId: string, apiKey?: string): Promise<CreateVideoData | null> {
@@ -382,29 +415,48 @@ export class VideoService {
 
   // Cache management methods
   static clearCache(): void {
-    this.cache.clear();
+    try {
+      this.cache = {};
+    } catch (error) {
+      console.warn('Cache clear error:', error);
+    }
   }
 
   static clearCacheKey(key: string): void {
-    this.cache.delete(key);
+    try {
+      delete this.cache[key];
+    } catch (error) {
+      console.warn('Cache key clear error:', error);
+    }
   }
 
   static getCacheStats() {
-    return {
-      size: this.cache.size,
-      entries: Array.from(this.cache.entries()).map(([key, value]) => ({
-        key,
-        timestamp: value.timestamp,
-        age: Date.now() - value.timestamp,
-        isStale: Date.now() - value.timestamp > this.CACHE_DURATION
-      }))
-    };
+    try {
+      const entries = Object.entries(this.cache);
+      return {
+        size: entries.length,
+        entries: entries.map(([key, value]) => ({
+          key,
+          timestamp: value.timestamp,
+          age: Date.now() - value.timestamp,
+          isStale: Date.now() - value.timestamp > this.CACHE_DURATION
+        }))
+      };
+    } catch (error) {
+      console.warn('Cache stats error:', error);
+      return { size: 0, entries: [] };
+    }
   }
 
   private static invalidateAllCaches(): void {
     // Clear all video-related caches when data changes
-    this.cache.clear();
+    try {
+      this.cache = {};
+    } catch (error) {
+      console.warn('Cache invalidation error:', error);
+    }
   }
+
 }
 
 export const videoService = VideoService;

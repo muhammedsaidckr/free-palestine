@@ -31,10 +31,12 @@ function formatTimeAgo(dateString: string): string {
   }
 }
 
-function createId(title: string, source: string): string {
+function createId(title: string, source: string, date?: string): string {
   // Use crypto.subtle for base64 encoding in Cloudflare Workers
   const encoder = new TextEncoder();
-  const data = encoder.encode(`${title}-${source}`);
+  const timestamp = date || new Date().toISOString();
+  const uniqueString = `${title}-${source}-${timestamp}`;
+  const data = encoder.encode(uniqueString);
   return Array.from(data)
     .map(byte => byte.toString(36))
     .join('')
@@ -89,7 +91,7 @@ async function fetchMiddleEastEyeRSS(): Promise<NewsItem[]> {
       const dateStr = dateMatch ? new Date(dateMatch[1]).toISOString() : new Date().toISOString();
 
       articles.push({
-        id: createId(title, 'Middle East Eye'),
+        id: createId(title, 'Middle East Eye', dateStr),
         title,
         summary,
         content: summary,
@@ -158,7 +160,7 @@ async function fetchTRTHaberRSS(): Promise<NewsItem[]> {
       const dateStr = dateMatch ? new Date(dateMatch[1]).toISOString() : new Date().toISOString();
 
       articles.push({
-        id: createId(title, 'TRT Haber'),
+        id: createId(title, 'TRT Haber', dateStr),
         title,
         summary,
         content: summary,

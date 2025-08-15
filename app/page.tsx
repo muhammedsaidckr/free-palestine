@@ -11,7 +11,6 @@ import ContactForm from "@/components/ContactForm";
 import NewsletterForm from "@/components/NewsletterForm";
 import { LazySection } from "@/components/LazySection";
 import VideoContent, { VideoItem } from "@/components/VideoContent";
-import { videoService } from "@/lib/videoService";
 
 export default function Home() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -111,8 +110,13 @@ export default function Home() {
     const fetchFeaturedVideos = async () => {
       try {
         setVideosLoading(true);
-        const videos = await videoService.getFeaturedVideos(3);
-        setFeaturedVideos(videos);
+        const response = await fetch('/api/videos?featured=true&limit=3');
+        const result = await response.json();
+        if (result.success && result.data) {
+          setFeaturedVideos(result.data);
+        } else {
+          console.error('Error fetching featured videos:', result.error);
+        }
       } catch (error) {
         console.error('Error fetching featured videos:', error);
       } finally {
@@ -552,8 +556,8 @@ export default function Home() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {newsItems.map((news) => (
-                <div key={news.id} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+              {newsItems.map((news, index) => (
+                <div key={`${news.id}-${index}`} className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
                   <div className="p-6">
                     <div className={`text-sm font-medium mb-2 ${getCategoryBadgeColor(news.category)}`}>
                       {getCategoryLabel(news.category)}

@@ -4,7 +4,6 @@ import { useState } from 'react';
 import Image from "next/image";
 import { useI18n } from "@/components/I18nProvider";
 import VideoContent, { VideoItem } from "@/components/VideoContent";
-import { videoService } from "@/lib/videoService";
 import Link from 'next/link';
 import { useEffect } from 'react';
 
@@ -39,8 +38,13 @@ export default function VideosPage() {
     const fetchAllVideos = async () => {
       try {
         setVideosLoading(true);
-        const videos = await videoService.getAllVideos();
-        setAllVideos(videos);
+        const response = await fetch('/api/videos');
+        const result = await response.json();
+        if (result.success && result.data) {
+          setAllVideos(result.data);
+        } else {
+          console.error('Error fetching videos:', result.error);
+        }
       } catch (error) {
         console.error('Error fetching videos:', error);
       } finally {

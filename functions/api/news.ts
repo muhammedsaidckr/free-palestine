@@ -28,10 +28,12 @@ function formatTimeAgo(dateString: string): string {
   }
 }
 
-function createId(title: string, source: string): string {
+function createId(title: string, source: string, date?: string): string {
   // Use crypto.subtle for base64 encoding in Cloudflare Workers
   const encoder = new TextEncoder();
-  const data = encoder.encode(`${title}-${source}`);
+  const timestamp = date || new Date().toISOString();
+  const uniqueString = `${title}-${source}-${timestamp}`;
+  const data = encoder.encode(uniqueString);
   return Array.from(data)
     .map(byte => byte.toString(36))
     .join('')
@@ -76,7 +78,7 @@ async function fetchAlJazeeraNews(): Promise<NewsItem[]> {
         const imageUrl = imageMatch ? imageMatch[1] : undefined;
 
         articles.push({
-          id: createId(title, 'Al Jazeera'),
+          id: createId(title, 'Al Jazeera', dateStr),
           title,
           summary,
           content: summary,
