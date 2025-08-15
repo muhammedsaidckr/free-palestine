@@ -3,14 +3,14 @@
 import { useState } from 'react';
 import Image from "next/image";
 import { useI18n } from "@/components/I18nProvider";
-import VideoContent from "@/components/VideoContent";
+import VideoContent, { VideoItem } from "@/components/VideoContent";
 import { videoService } from "@/lib/videoService";
 import Link from 'next/link';
 import { useEffect } from 'react';
 
 export default function VideosPage() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [allVideos, setAllVideos] = useState<{title: string; description: string; videoId: string; thumbnail: string; category: string; duration: string; publishedAt: string}[]>([]);
+  const [allVideos, setAllVideos] = useState<VideoItem[]>([]);
   const [videosLoading, setVideosLoading] = useState(true);
   const { language, setLanguage, t } = useI18n();
 

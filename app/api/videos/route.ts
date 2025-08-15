@@ -1,14 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { videoService, CreateVideoData } from '@/lib/videoService';
-import { rateLimitMiddleware } from '@/lib/middleware/rateLimiting';
+import { checkRateLimit, RateLimitPresets } from '@/lib/middleware/rateLimiting';
 import { validateVideoData, sanitizeVideoData } from '@/lib/middleware/validation';
 
 export async function GET(request: NextRequest) {
   try {
     // Apply rate limiting
-    const rateLimitResult = await rateLimitMiddleware(request);
-    if (rateLimitResult) {
-      return rateLimitResult;
+    const rateLimitResult = await checkRateLimit(request, RateLimitPresets.lenient);
+    if (!rateLimitResult.allowed) {
+      return NextResponse.json(
+        { error: RateLimitPresets.lenient.message || 'Too many requests' },
+        { status: 429 }
+      );
     }
 
     const { searchParams } = new URL(request.url);
@@ -48,9 +51,12 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     // Apply rate limiting
-    const rateLimitResult = await rateLimitMiddleware(request);
-    if (rateLimitResult) {
-      return rateLimitResult;
+    const rateLimitResult = await checkRateLimit(request, RateLimitPresets.standard);
+    if (!rateLimitResult.allowed) {
+      return NextResponse.json(
+        { error: RateLimitPresets.standard.message || 'Too many requests' },
+        { status: 429 }
+      );
     }
 
     const body = await request.json();
@@ -69,7 +75,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Sanitize the data
-    const sanitizedData = sanitizeVideoData(body) as CreateVideoData;
+    const sanitizedData = sanitizeVideoData(body) as unknown as CreateVideoData;
 
     // Create the video
     const video = await videoService.createVideo(sanitizedData);

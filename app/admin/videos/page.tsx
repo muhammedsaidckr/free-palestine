@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { VideoData, CreateVideoData } from '@/lib/videoService';
+import { VideoItem } from '@/components/VideoContent';
 import { createClient } from '@/lib/supabase/client';
 
 interface ApiResponse<T> {
@@ -39,8 +40,8 @@ export default function VideoAdminPage() {
     // Check authentication
     const checkAuth = async () => {
       const { data: { user } } = await supabase.auth.getUser();
-      if (user) {
-        setUser(user);
+      if (user && user.email) {
+        setUser({ email: user.email });
         fetchVideos();
       } else {
         router.push('/admin/login');
@@ -53,8 +54,8 @@ export default function VideoAdminPage() {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_OUT' || !session) {
         router.push('/admin/login');
-      } else if (session?.user) {
-        setUser(session.user);
+      } else if (session?.user?.email) {
+        setUser({ email: session.user.email });
       }
     });
 
@@ -65,11 +66,11 @@ export default function VideoAdminPage() {
     try {
       setLoading(true);
       const response = await fetch('/api/videos');
-      const result: ApiResponse<VideoData[]> = await response.json();
+      const result: ApiResponse<VideoItem[]> = await response.json();
       
       if (result.success && result.data) {
         // Convert to proper VideoData format since API returns VideoItem format
-        const videoData = result.data.map((video: {title: string; description: string; videoId: string; thumbnail: string; category: string; duration: string; publishedAt: string}) => ({
+        const videoData = result.data.map((video) => ({
           id: Math.random(), // This would come from the database
           title: video.title,
           description: video.description,

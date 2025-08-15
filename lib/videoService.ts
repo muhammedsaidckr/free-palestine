@@ -47,7 +47,7 @@ export class VideoService {
 
   static async getAllVideos(): Promise<VideoItem[]> {
     try {
-      const supabase = createClient();
+      const supabase = await createClient();
       const { data, error } = await supabase
         .from('videos')
         .select('*')
@@ -72,7 +72,7 @@ export class VideoService {
     }
 
     try {
-      const supabase = createClient();
+      const supabase = await createClient();
       const { data, error } = await supabase
         .from('videos')
         .select('*')
@@ -94,7 +94,7 @@ export class VideoService {
 
   static async getFeaturedVideos(count: number = 3): Promise<VideoItem[]> {
     try {
-      const supabase = createClient();
+      const supabase = await createClient();
       const { data, error } = await supabase
         .from('videos')
         .select('*')
@@ -118,7 +118,7 @@ export class VideoService {
 
   static async getVideoById(videoId: string): Promise<VideoItem | null> {
     try {
-      const supabase = createClient();
+      const supabase = await createClient();
       const { data, error } = await supabase
         .from('videos')
         .select('*')
@@ -140,7 +140,7 @@ export class VideoService {
 
   static async createVideo(videoData: CreateVideoData): Promise<VideoData | null> {
     try {
-      const supabase = createClient();
+      const supabase = await createClient();
       const { data, error } = await supabase
         .from('videos')
         .insert([{
@@ -164,7 +164,7 @@ export class VideoService {
 
   static async updateVideo(id: number, updates: Partial<CreateVideoData>): Promise<VideoData | null> {
     try {
-      const supabase = createClient();
+      const supabase = await createClient();
       const { data, error } = await supabase
         .from('videos')
         .update({ ...updates, updated_at: new Date().toISOString() })
@@ -186,7 +186,7 @@ export class VideoService {
 
   static async deleteVideo(id: number): Promise<boolean> {
     try {
-      const supabase = createClient();
+      const supabase = await createClient();
       const { error } = await supabase
         .from('videos')
         .update({ is_active: false, updated_at: new Date().toISOString() })
@@ -206,7 +206,7 @@ export class VideoService {
 
   static async incrementViewCount(videoId: string): Promise<boolean> {
     try {
-      const supabase = createClient();
+      const supabase = await createClient();
       const { error } = await supabase.rpc('increment_video_views', {
         video_id_param: videoId
       });
@@ -305,7 +305,7 @@ export class VideoService {
 
   static async getCategoryStats(): Promise<{[key: string]: number}> {
     try {
-      const supabase = createClient();
+      const supabase = await createClient();
       const { data, error } = await supabase
         .from('videos_by_category')
         .select('*');

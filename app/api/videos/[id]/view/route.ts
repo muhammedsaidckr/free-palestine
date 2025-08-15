@@ -1,22 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { videoService } from '@/lib/videoService';
-import { rateLimitMiddleware } from '@/lib/middleware/rateLimiting';
+import { checkRateLimit, RateLimitPresets } from '@/lib/middleware/rateLimiting';
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export async function POST(request: NextRequest, { params }: RouteParams) {
   try {
     // Apply rate limiting
-    const rateLimitResult = await rateLimitMiddleware(request);
-    if (rateLimitResult) {
-      return rateLimitResult;
+    const rateLimitResult = await checkRateLimit(request, RateLimitPresets.lenient);
+    if (!rateLimitResult.allowed) {
+      return NextResponse.json(
+        { error: RateLimitPresets.lenient.message || 'Too many requests' },
+        { status: 429 }
+      );
     }
 
-    const { id } = params;
+    const { id } = await params;
 
     // Increment view count for the video
     const success = await videoService.incrementViewCount(id);

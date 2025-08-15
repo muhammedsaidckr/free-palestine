@@ -11,7 +11,7 @@ interface Env extends Record<string, string | undefined> {
 }
 
 async function handleGetPetitionCount(...args: unknown[]) {
-  const [_request] = args as [NextRequest];
+  const [] = args as [NextRequest];
   try {
     const env: Env = {
       NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL!,

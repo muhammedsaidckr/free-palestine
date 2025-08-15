@@ -10,7 +10,7 @@ import PetitionForm from "@/components/PetitionForm";
 import ContactForm from "@/components/ContactForm";
 import NewsletterForm from "@/components/NewsletterForm";
 import { LazySection } from "@/components/LazySection";
-import VideoContent from "@/components/VideoContent";
+import VideoContent, { VideoItem } from "@/components/VideoContent";
 import { videoService } from "@/lib/videoService";
 
 export default function Home() {
@@ -20,7 +20,7 @@ export default function Home() {
   const [statistics, setStatistics] = useState<StatisticsData | null>(null);
   const [statisticsLoading, setStatisticsLoading] = useState(true);
   const [statisticsError, setStatisticsError] = useState<string | null>(null);
-  const [featuredVideos, setFeaturedVideos] = useState<{title: string; description: string; videoId: string; thumbnail: string; category: string; duration: string; publishedAt: string}[]>([]);
+  const [featuredVideos, setFeaturedVideos] = useState<VideoItem[]>([]);
   const [videosLoading, setVideosLoading] = useState(true);
   const { language, setLanguage, t } = useI18n();
 

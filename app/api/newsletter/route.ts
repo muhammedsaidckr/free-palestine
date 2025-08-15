@@ -11,7 +11,7 @@ interface Env extends Record<string, string | undefined> {
 }
 
 async function handleNewsletterSubscription(...args: unknown[]) {
-  const [_request, validatedData] = args as [NextRequest, Record<string, unknown>];
+  const [, validatedData] = args as [NextRequest, Record<string, unknown>];
   try {
     const env: Env = {
       NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -72,7 +72,7 @@ async function handleNewsletterSubscription(...args: unknown[]) {
 }
 
 async function handleGetSubscriberCount(...args: unknown[]) {
-  const [_request] = args as [NextRequest];
+  const [] = args as [NextRequest];
   try {
     const env: Env = {
       NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL!,

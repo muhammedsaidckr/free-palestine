@@ -3,7 +3,7 @@ import { withMiddleware, RateLimits } from '../../../lib/middleware';
 import { getLatestStatistics } from '../../../lib/database';
 
 async function handleGetStatistics(...args: unknown[]) {
-  const [_request] = args as [NextRequest];
+  const [] = args as [NextRequest];
   
   try {
     const statistics = await getLatestStatistics();

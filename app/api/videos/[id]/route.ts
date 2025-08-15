@@ -1,23 +1,26 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { videoService } from '@/lib/videoService';
-import { rateLimitMiddleware } from '@/lib/middleware/rateLimiting';
+import { checkRateLimit, RateLimitPresets } from '@/lib/middleware/rateLimiting';
 import { validateVideoData, sanitizeVideoData } from '@/lib/middleware/validation';
 
 interface RouteParams {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
 export async function GET(request: NextRequest, { params }: RouteParams) {
   try {
     // Apply rate limiting
-    const rateLimitResult = await rateLimitMiddleware(request);
-    if (rateLimitResult) {
-      return rateLimitResult;
+    const rateLimitResult = await checkRateLimit(request, RateLimitPresets.lenient);
+    if (!rateLimitResult.allowed) {
+      return NextResponse.json(
+        { error: RateLimitPresets.lenient.message || 'Too many requests' },
+        { status: 429 }
+      );
     }
 
-    const { id } = params;
+    const { id } = await params;
 
     // Check if ID is numeric (database ID) or string (video_id)
     const isNumericId = /^\d+$/.test(id);
@@ -67,12 +70,15 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
 export async function PUT(request: NextRequest, { params }: RouteParams) {
   try {
     // Apply rate limiting
-    const rateLimitResult = await rateLimitMiddleware(request);
-    if (rateLimitResult) {
-      return rateLimitResult;
+    const rateLimitResult = await checkRateLimit(request, RateLimitPresets.standard);
+    if (!rateLimitResult.allowed) {
+      return NextResponse.json(
+        { error: RateLimitPresets.standard.message || 'Too many requests' },
+        { status: 429 }
+      );
     }
 
-    const { id } = params;
+    const { id } = await params;
     const body = await request.json();
 
     // Validate that ID is numeric (database ID)
@@ -136,12 +142,15 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 export async function DELETE(request: NextRequest, { params }: RouteParams) {
   try {
     // Apply rate limiting
-    const rateLimitResult = await rateLimitMiddleware(request);
-    if (rateLimitResult) {
-      return rateLimitResult;
+    const rateLimitResult = await checkRateLimit(request, RateLimitPresets.strict);
+    if (!rateLimitResult.allowed) {
+      return NextResponse.json(
+        { error: RateLimitPresets.strict.message || 'Too many requests' },
+        { status: 429 }
+      );
     }
 
-    const { id } = params;
+    const { id } = await params;
 
     // Validate that ID is numeric (database ID)
     const databaseId = parseInt(id);
