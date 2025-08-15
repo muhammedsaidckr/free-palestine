@@ -10,6 +10,8 @@ import PetitionForm from "@/components/PetitionForm";
 import ContactForm from "@/components/ContactForm";
 import NewsletterForm from "@/components/NewsletterForm";
 import { LazySection } from "@/components/LazySection";
+import VideoContent from "@/components/VideoContent";
+import { videoService } from "@/lib/videoService";
 
 export default function Home() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -18,6 +20,8 @@ export default function Home() {
   const [statistics, setStatistics] = useState<StatisticsData | null>(null);
   const [statisticsLoading, setStatisticsLoading] = useState(true);
   const [statisticsError, setStatisticsError] = useState<string | null>(null);
+  const [featuredVideos, setFeaturedVideos] = useState<{title: string; description: string; videoId: string; thumbnail: string; category: string; duration: string; publishedAt: string}[]>([]);
+  const [videosLoading, setVideosLoading] = useState(true);
   const { language, setLanguage, t } = useI18n();
 
   const toggleMobileMenu = () => {
@@ -104,8 +108,21 @@ export default function Home() {
       }
     };
 
+    const fetchFeaturedVideos = async () => {
+      try {
+        setVideosLoading(true);
+        const videos = await videoService.getFeaturedVideos(3);
+        setFeaturedVideos(videos);
+      } catch (error) {
+        console.error('Error fetching featured videos:', error);
+      } finally {
+        setVideosLoading(false);
+      }
+    };
+
     fetchHomePageNews();
     fetchStatistics();
+    fetchFeaturedVideos();
   }, []);
 
   const getCategoryBadgeColor = (category: string) => {
@@ -156,6 +173,7 @@ export default function Home() {
               <a href="/bilgilendirme" className="text-gray-700 hover:text-[#CE1126] font-medium">{t('nav.information')}</a>
               <a href="/haberler" className="text-gray-700 hover:text-[#CE1126] font-medium">{t('nav.news')}</a>
               <a href="/eylemler" className="text-gray-700 hover:text-[#CE1126] font-medium">{t('nav.actions')}</a>
+              <a href="/videolar" className="text-gray-700 hover:text-[#CE1126] font-medium">Videolar</a>
               <a href="/boykot" className="text-gray-700 hover:text-[#CE1126] font-medium">Boykot</a>
               <button onClick={() => scrollToSection('iletisim')} className="text-gray-700 hover:text-[#CE1126] font-medium cursor-pointer">{t('nav.contact')}</button>
             </nav>
@@ -259,6 +277,13 @@ export default function Home() {
                 onClick={closeMobileMenu}
               >
                 {t('nav.actions')}
+              </a>
+              <a
+                href="/videolar"
+                className="block w-full text-left px-4 py-3 text-gray-700 hover:bg-gray-50 hover:text-[#CE1126] font-medium border-l-4 border-transparent hover:border-[#CE1126]"
+                onClick={closeMobileMenu}
+              >
+                Videolar
               </a>
               <a
                 href="/boykot"
@@ -569,6 +594,36 @@ export default function Home() {
         </section>
       </LazySection>
 
+      {/* Video Section */}
+      <LazySection>
+        {videosLoading ? (
+          <div className="py-20 bg-white">
+            <div className="text-center py-8">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#CE1126] mx-auto mb-4"></div>
+              <p className="text-gray-600">Videolar yükleniyor...</p>
+            </div>
+          </div>
+        ) : (
+          <>
+            <VideoContent 
+              videos={featuredVideos}
+              title="Video İçerikleri"
+              subtitle="Filistin konusunda bilinçlendirici video içerikleri"
+              showCategories={false}
+              className="bg-white"
+            />
+            <div className="text-center pb-8">
+              <a 
+                href="/videolar"
+                className="bg-[#CE1126] text-white px-8 py-3 rounded-lg font-semibold hover:bg-[#B00E20] transition-colors inline-block"
+              >
+                Tüm Videoları Gör
+              </a>
+            </div>
+          </>
+        )}
+      </LazySection>
+
       {/* Petition Section */}
       <section id="petition" className="py-20 bg-gray-100">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -642,6 +697,7 @@ export default function Home() {
                 <li><a href="/bilgilendirme" className="hover:text-white text-left block">{t('nav.information')}</a></li>
                 <li><a href="/haberler" className="hover:text-white text-left block">{t('nav.news')}</a></li>
                 <li><a href="/eylemler" className="hover:text-white text-left block">{t('nav.actions')}</a></li>
+                <li><a href="/videolar" className="hover:text-white text-left block">Videolar</a></li>
                 <li><button onClick={() => scrollToSection('iletisim')} className="hover:text-white text-left">{t('nav.contact')}</button></li>
               </ul>
             </div>

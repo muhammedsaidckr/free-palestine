@@ -259,7 +259,7 @@ const FALLBACK_NEWS: NewsItem[] = [
 ];
 
 async function handleGetNews(...args: unknown[]) {
-  const [request] = args as [NextRequest];
+  const [_request] = args as [NextRequest];
   try {
     // Try to fetch from various sources
     const fetchedNews = await fetchNewsWithFallback();

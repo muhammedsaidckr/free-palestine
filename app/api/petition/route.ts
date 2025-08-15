@@ -1,3 +1,5 @@
+'use server';
+
 import { NextRequest, NextResponse } from 'next/server';
 import { createSupabaseClient, savePetitionSignature, getPetitionSignature, getPetitionSignatureCount } from '../../../functions/_lib/database';
 import { getClientIP } from '../../../functions/_lib/email';
@@ -9,7 +11,7 @@ interface Env extends Record<string, string | undefined> {
 }
 
 async function handleGetPetitionCount(...args: unknown[]) {
-  const [request] = args as [NextRequest];
+  const [_request] = args as [NextRequest];
   try {
     const env: Env = {
       NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL!,

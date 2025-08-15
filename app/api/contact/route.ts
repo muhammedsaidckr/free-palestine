@@ -11,7 +11,7 @@ interface Env extends Record<string, string | undefined> {
 }
 
 async function handleContactSubmission(...args: unknown[]) {
-  const [request, validatedData] = args as [NextRequest, Record<string, unknown>];
+  const [_request, validatedData] = args as [NextRequest, Record<string, unknown>];
   try {
     const env: Env = {
       NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL!,
