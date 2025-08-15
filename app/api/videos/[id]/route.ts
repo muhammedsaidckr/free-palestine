@@ -127,8 +127,20 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       data: video
     });
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('Error in PUT /api/videos/[id]:', error);
+    
+    // Handle duplicate video_id constraint violation
+    if (error?.code === '23505' && error?.message?.includes('videos_video_id_key')) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Bu YouTube video ID zaten mevcut. Lütfen farklı bir video seçin.'
+        },
+        { status: 409 }
+      );
+    }
+    
     return NextResponse.json(
       {
         success: false,

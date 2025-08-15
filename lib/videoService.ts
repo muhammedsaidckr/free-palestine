@@ -174,13 +174,14 @@ export class VideoService {
 
       if (error) {
         console.error('Error updating video:', error);
-        return null;
+        // Re-throw the error to preserve the original error information
+        throw error;
       }
 
       return data;
     } catch (error) {
       console.error('Error in updateVideo:', error);
-      return null;
+      throw error;
     }
   }
 

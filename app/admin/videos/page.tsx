@@ -70,8 +70,8 @@ export default function VideoAdminPage() {
       
       if (result.success && result.data) {
         // Convert to proper VideoData format since API returns VideoItem format
-        const videoData = result.data.map((video) => ({
-          id: Math.random(), // This would come from the database
+        const videoData = result.data.map((video, index) => ({
+          id: parseInt(video.id) || index + 1, // Parse string ID to number
           title: video.title,
           description: video.description,
           video_id: video.videoId,
