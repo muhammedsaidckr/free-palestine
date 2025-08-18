@@ -11,6 +11,7 @@ import ContactForm from "@/components/ContactForm";
 import NewsletterForm from "@/components/NewsletterForm";
 import { LazySection } from "@/components/LazySection";
 import VideoContent, { VideoItem } from "@/components/VideoContent";
+import GlobalSumudFlotilla from "@/components/GlobalSumudFlotilla";
 
 export default function Home() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -492,6 +493,9 @@ export default function Home() {
           </div>
         </section>
       </LazySection>
+
+      {/* Global Sumud Flotilla Section */}
+      <GlobalSumudFlotilla />
 
       {/* Action Section */}
       <section id="hareket" className="py-20 bg-[#CE1126] text-white">
