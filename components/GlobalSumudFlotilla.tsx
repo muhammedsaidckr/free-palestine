@@ -82,7 +82,7 @@ export default function GlobalSumudFlotilla() {
           </p>
           <div className="bg-white/20 backdrop-blur-sm rounded-xl p-8 max-w-4xl mx-auto border border-white/30 shadow-xl">
             <p className="text-lg md:text-xl font-semibold mb-4 text-white">{content.mission}</p>
-            <p className="text-white italic text-lg md:text-xl font-medium">"{content.motto}"</p>
+            <p className="text-white italic text-lg md:text-xl font-medium">&quot;{content.motto}&quot;</p>
           </div>
         </div>
 
